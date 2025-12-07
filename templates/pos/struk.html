@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struk {{ trx.kode_transaksi }}</title>
+    <style>
+        /* CSS KHUSUS KERTAS THERMAL 58mm */
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Font mirip mesin kasir */
+            font-size: 12px;
+            margin: 0;
+            padding: 10px;
+            width: 58mm; /* Lebar kertas standar */
+        }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .bold { font-weight: bold; }
+        .line { border-bottom: 1px dashed #000; margin: 5px 0; }
+        
+        table { width: 100%; }
+        td { vertical-align: top; }
+        
+        /* Hilangkan elemen browser saat print */
+        @media print {
+            @page { margin: 0; }
+            body { margin: 10px; }
+        }
+    </style>
+</head>
+<body onload="window.print()"> <div class="text-center">
+        <div class="bold" style="font-size: 14px;">{{ store_name }}</div>
+        <div>{{ store_address }}</div>
+        <div>Telp: {{ store_phone }}</div>
+    </div>
+
+    <div class="line"></div>
+
+    <div>
+        No: {{ trx.kode_transaksi }}<br>
+        Tgl: {{ trx.tanggal|date:"d/m/Y H:i" }}<br>
+        Kasir: {{ request.user.username }}
+    </div>
+
+    <div class="line"></div>
+
+    <table>
+        {% for item in items %}
+        <tr>
+            <td colspan="2">{{ item.produk.nama_barang }}</td>
+        </tr>
+        <tr>
+            <td>{{ item.qty }} x {{ item.harga_saat_itu }}</td>
+            <td class="text-right">{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="line"></div>
+
+    <table>
+        <tr>
+            <td>Total</td>
+            <td class="text-right bold">Rp {{ trx.total_belanja }}</td>
+        </tr>
+        <tr>
+            <td>Bayar</td>
+            <td class="text-right">Rp {{ trx.uang_bayar }}</td>
+        </tr>
+        <tr>
+            <td>Kembali</td>
+            <td class="text-right">Rp {{ trx.kembalian }}</td>
+        </tr>
+    </table>
+
+    <div class="line"></div>
+    <div class="text-center">
+        Terima Kasih<br>
+        Selamat Belanja Kembali
+    </div>
+    <br><br>
+
+</body>
+</html>

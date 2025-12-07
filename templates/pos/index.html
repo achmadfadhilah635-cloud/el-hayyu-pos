@@ -1,0 +1,306 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="ni ni-cart text-primary"></i> Kasir / Transaksi Baru</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                            <input type="text" id="barcode_input" class="form-control" placeholder="Ketik Kode Barang & Tekan Enter..." autofocus>
+                            <button class="btn btn-primary mb-0" type="button" onclick="cariBarang()">
+                                <i class="fas fa-plus"></i> Tambah
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama Barang</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Harga</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Qty</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subtotal</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel_keranjang">
+                                </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="empty_cart_msg" class="text-center mt-4">
+                        <p class="text-sm text-muted">Keranjang masih kosong. Silakan input kode barang.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card bg-white shadow border-0">
+                
+                <div class="card-header bg-gradient-primary py-3">
+                    <h6 class="text-white font-weight-bold text-center mb-0">
+                        <i class="ni ni-money-coins me-2"></i> PEMBAYARAN
+                    </h6>
+                </div>
+                
+                <div class="card-body px-lg-4 py-lg-4">
+                    <div class="text-center mb-3">
+                        <span class="text-muted text-uppercase text-xs font-weight-bold">Total Tagihan:</span>
+                        <h3 class="font-weight-bolder text-primary mt-2" id="label_total">Rp 0</h3>
+                    </div>
+
+                    <hr class="dark horizontal my-3">
+                    
+                    <form role="form">
+                        <div class="form-group mb-3">
+                            <label class="form-control-label text-xs">Uang Tunai (Bayar)</label>
+                            <div class="input-group input-group-alternative border border-light shadow-sm rounded">
+                                <span class="input-group-text bg-white py-1"><i class="fas fa-wallet text-success text-sm"></i></span>
+                                <input class="form-control ps-2" placeholder="0" type="number" id="input_bayar" style="font-weight: bold; font-size: 1rem;">
+                            </div>
+                        </div>
+                        
+                        <div class="card border mb-3 shadow-none">
+                            <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center">
+                                <span class="text-xs font-weight-bold text-muted">Kembalian:</span>
+                                <h5 class="text-dark font-weight-bold mb-0" id="label_kembali" style="font-size: 1rem;">Rp 0</h5>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn bg-gradient-success w-100 mb-0" onclick="selesaikanTransaksi()">
+                                <i class="ni ni-check-bold"></i> BAYAR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    // --- VARIABEL GLOBAL UNTUK MENYIMPAN DATA BELANJA ---
+    let keranjang = []; 
+
+    // 1. FUNGSI MENCARI BARANG (DIPANGGIL SAAT ENTER / KLIK TAMBAH)
+    const inputBarcode = document.getElementById('barcode_input');
+    
+    // Agar bisa tekan Enter
+    inputBarcode.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            cariBarang();
+        }
+    });
+
+    function cariBarang() {
+        let kode = inputBarcode.value;
+        if(!kode) {
+            alert("Kode barang tidak boleh kosong!");
+            return;
+        }
+
+        // Panggil API yang sudah kita buat
+        fetch(`/api/get-product/?code=${kode}`)
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    tambahKeKeranjang(data);
+                    inputBarcode.value = ""; // Kosongkan input setelah sukses
+                    inputBarcode.focus();    // Fokus lagi biar siap scan
+                } else {
+                    alert("Barang tidak ditemukan! Cek kembali kode.");
+                    inputBarcode.select();   // Blok teks biar gampang diganti
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // 2. FUNGSI MASUKKAN KE KERANJANG
+    function tambahKeKeranjang(barang) {
+        // Cek apakah barang sudah ada di keranjang?
+        let itemExist = keranjang.find(item => item.id === barang.id);
+
+        if(itemExist) {
+            itemExist.qty += 1; // Kalau ada, tambah jumlahnya
+        } else {
+            // Kalau belum, masukkan baru
+            keranjang.push({
+                id: barang.id,
+                nama: barang.nama,
+                harga: barang.harga,
+                qty: 1
+            });
+        }
+        updateTampilan();
+    }
+
+    // 3. FUNGSI UPDATE TAMPILAN TABEL & TOTAL
+    function updateTampilan() {
+        const tabel = document.getElementById('tabel_keranjang');
+        const emptyMsg = document.getElementById('empty_cart_msg');
+        let totalBelanja = 0;
+
+        // Bersihkan tabel lama
+        tabel.innerHTML = "";
+
+        if(keranjang.length === 0) {
+            emptyMsg.style.display = 'block';
+        } else {
+            emptyMsg.style.display = 'none';
+            
+            // Loop data keranjang
+            keranjang.forEach((item, index) => {
+                let subtotal = item.harga * item.qty;
+                totalBelanja += subtotal;
+
+                let row = `
+                    <tr>
+                        <td>
+                            <div class="d-flex px-2 py-1">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">${item.nama}</h6>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <p class="text-xs font-weight-bold mb-0">Rp ${item.harga.toLocaleString()}</p>
+                        </td>
+                        <td class="align-middle">
+                            <button class="btn btn-xs btn-outline-primary px-2 py-1 mb-0" onclick="ubahQty(${index}, -1)">-</button>
+                            <span class="text-secondary text-xs font-weight-bold mx-2">${item.qty}</span>
+                            <button class="btn btn-xs btn-outline-primary px-2 py-1 mb-0" onclick="ubahQty(${index}, 1)">+</button>
+                        </td>
+                        <td class="align-middle">
+                            <span class="text-secondary text-xs font-weight-bold">Rp ${subtotal.toLocaleString()}</span>
+                        </td>
+                        <td class="align-middle">
+                            <a href="javascript:;" class="text-danger font-weight-bold text-xs" onclick="hapusItem(${index})">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                tabel.innerHTML += row;
+            });
+        }
+
+        // Update Angka Total Besar
+        document.getElementById('label_total').innerText = "Rp " + totalBelanja.toLocaleString('id-ID');
+        hitungKembalian(totalBelanja); // Cek kembalian
+    }
+
+    // 4. FUNGSI UBAH JUMLAH (+ / -)
+    function ubahQty(index, jumlah) {
+        keranjang[index].qty += jumlah;
+        if(keranjang[index].qty <= 0) {
+            hapusItem(index); // Kalau 0 otomatis hapus
+        } else {
+            updateTampilan();
+        }
+    }
+
+    // 5. FUNGSI HAPUS ITEM
+    function hapusItem(index) {
+        keranjang.splice(index, 1); // Hapus dari array
+        updateTampilan();
+    }
+
+    // 6. HITUNG KEMBALIAN OTOMATIS
+    const inputBayar = document.getElementById('input_bayar');
+    inputBayar.addEventListener('keyup', function() {
+        // Ambil total belanja dari array
+        let total = keranjang.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+        hitungKembalian(total);
+    });
+
+    function hitungKembalian(total) {
+        let bayar = parseInt(inputBayar.value) || 0;
+        let kembali = bayar - total;
+        
+        let labelKembali = document.getElementById('label_kembali');
+        
+        if(kembali >= 0) {
+            labelKembali.innerText = "Rp " + kembali.toLocaleString('id-ID');
+            labelKembali.classList.replace('text-danger', 'text-success');
+        } else {
+            labelKembali.innerText = "Kurang Rp " + Math.abs(kembali).toLocaleString('id-ID');
+            labelKembali.classList.replace('text-success', 'text-danger');
+        }
+    }
+
+    // 7. SIMPAN TRANSAKSI KE DATABASE
+    function selesaikanTransaksi() {
+        // Cek Validasi
+        if(keranjang.length === 0) {
+            alert("Keranjang kosong! Scan barang dulu.");
+            return;
+        }
+
+        let inputBayar = document.getElementById('input_bayar');
+        let uangBayar = parseInt(inputBayar.value) || 0;
+        
+        // Hitung total lagi biar aman
+        let totalBelanja = keranjang.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+
+        if(uangBayar < totalBelanja) {
+            alert("Uang pembayaran kurang!");
+            return;
+        }
+
+        // Siapkan Data untuk dikirim ke Python
+        let dataTransaksi = {
+            keranjang: keranjang,
+            bayar: uangBayar,
+            total: totalBelanja
+        };
+
+        // KIRIM KE SERVER (AJAX)
+        fetch('/api/simpan-transaksi/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataTransaksi)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                alert("✅ Transaksi Berhasil!\nNo Struk: " + data.no_struk);
+                
+                // Reset Kasir
+                keranjang = [];
+                updateTampilan();
+                inputBayar.value = "";
+                document.getElementById('label_kembali').innerText = "Rp 0";
+                
+                // Opsional: Reload halaman biar stok di database update visualnya
+                // location.reload(); 
+            } else {
+                alert("❌ Gagal: " + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+</script>
+{% endblock extra_js %}

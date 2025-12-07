@@ -1,0 +1,258 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* 1. Header Background */
+    .header-luxury {
+        min-height: 400px;
+        background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg');
+        background-position: center center;
+        background-size: cover;
+    }
+    
+    /* 2. Kartu Profil (POSISI FINAL) */
+    .card-profile-luxury {
+        margin-top: -30px; /* Dulu -60px, sekarang -30px. Turun dikit lagi biar perfect */
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+        overflow: visible !important; /* Wajib visible */
+    }
+
+    /* 3. Avatar Floating (Tetap di tengah garis) */
+    .avatar-luxury {
+        width: 120px;
+        height: 120px;
+        margin-top: -60px; /* Floating setengah dari tinggi foto */
+        border: 4px solid #fff;
+        background-color: #fff;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* 4. Tombol Edit Minimalis */
+    .btn-edit-mini {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 5;
+    }
+</style>
+
+<div class="position-absolute w-100 top-0 header-luxury">
+  <span class="mask bg-gradient-default opacity-2"></span>
+</div>
+
+<div class="main-content position-relative max-height-vh-100 h-100">
+  <div class="container-fluid py-4">
+    
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10"> 
+        
+        <div class="card card-profile card-profile-luxury bg-white mb-5">
+            
+            <div class="btn-edit-mini">
+                <button class="btn btn-sm btn-white shadow-sm rounded-circle p-2" data-bs-toggle="modal" data-bs-target="#modalEditProfil" title="Edit Profil">
+                    <i class="fas fa-cog text-dark"></i>
+                </button>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4 col-lg-4 order-lg-2">
+                    <div class="d-flex justify-content-center">
+                        <a href="javascript:;">
+                            {% if request.user.profile.avatar %}
+                                <img src="{{ request.user.profile.avatar.url }}" 
+                                     class="rounded-circle avatar-luxury shadow-lg object-fit-cover">
+                            {% else %}
+                                <img src="{% static 'assets/img/team-4.jpg' %}" 
+                                     class="rounded-circle avatar-luxury shadow-lg">
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+                
+                <div class="text-center mt-5 pt-2"> 
+                    <h3 class="mb-0 font-weight-bolder">
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    </h3>
+                    <div class="h6 font-weight-300 text-primary mb-1">
+                        {{ request.user.profile.jabatan|default:"Staff Store" }}
+                    </div>
+                    <div class="text-sm text-muted">
+                        <i class="ni ni-pin-3 me-1"></i>
+                        {{ request.user.profile.kota|default:"-" }}, {{ request.user.profile.negara|default:"Indonesia" }}
+                    </div>
+                </div>
+
+                <div class="row justify-content-center my-3">
+                    <div class="col-lg-8">
+                        <div class="d-flex justify-content-center bg-gray-100 rounded p-2">
+                            <div class="d-grid text-center px-3 border-end">
+                                <span class="text-xs font-weight-bold text-uppercase text-muted">Gabung</span>
+                                <span class="text-sm font-weight-bolder mb-0">{{ request.user.date_joined|date:"Y" }}</span>
+                            </div>
+                            <div class="d-grid text-center px-3 border-end">
+                                <span class="text-xs font-weight-bold text-uppercase text-muted">Status</span>
+                                <span class="text-sm font-weight-bolder text-success mb-0">Aktif</span>
+                            </div>
+                            <div class="d-grid text-center px-3">
+                                <span class="text-xs font-weight-bold text-uppercase text-muted">Role</span>
+                                <span class="text-sm font-weight-bolder text-dark mb-0">
+                                     {% if request.user.is_superuser %}Admin{% else %}Staff{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <hr class="horizontal dark mt-1 mb-4">
+                        
+                        <div class="mb-3 text-center">
+                            <p class="text-sm text-muted fst-italic px-lg-5 mb-0">
+                                "{{ request.user.profile.bio|default:'Belum ada deskripsi diri.' }}"
+                            </p>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded h-100 bg-light">
+                                    <h6 class="text-uppercase text-xs font-weight-bolder opacity-7 mb-2">
+                                        <i class="fas fa-address-card me-2"></i>Kontak
+                                    </h6>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-sm text-muted">Username:</span>
+                                        <span class="text-sm fw-bold">@{{ request.user.username }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-sm text-muted">Email:</span>
+                                        <span class="text-sm fw-bold text-truncate" style="max-width: 150px;">{{ request.user.email }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-sm text-muted">HP:</span>
+                                        <span class="text-sm fw-bold">{{ request.user.profile.no_hp|default:"-" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded h-100 bg-light">
+                                    <h6 class="text-uppercase text-xs font-weight-bolder opacity-7 mb-2">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Domisili
+                                    </h6>
+                                    <p class="text-sm text-dark mb-0 fw-bold">
+                                        {{ request.user.profile.alamat|default:"Belum mengisi alamat." }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditProfil" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Edit Profil Lengkap</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body">
+            
+            <div class="row mb-4 justify-content-center">
+                <div class="col-md-6 text-center">
+                    <label class="form-control-label d-block mb-2">Foto Profil</label>
+                    <input type="file" name="avatar" class="form-control form-control-sm mb-2" accept="image/*">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="hapus_foto" id="hapusFoto">
+                        <label class="form-check-label text-sm text-danger" for="hapusFoto">Hapus foto saat ini</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 mb-2">
+                    <label class="form-control-label small">Nama Depan</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ request.user.first_name }}">
+                </div>
+                <div class="col-6 mb-2">
+                    <label class="form-control-label small">Nama Belakang</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ request.user.last_name }}">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 mb-2">
+                    <label class="form-control-label small">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ request.user.email }}">
+                </div>
+                 <div class="col-6 mb-2">
+                    <label class="form-control-label small">No HP</label>
+                    <input type="text" name="no_hp" class="form-control" value="{{ request.user.profile.no_hp|default:'' }}">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 mb-2">
+                    <label class="form-control-label small">Jabatan</label>
+                    <input type="text" name="jabatan" class="form-control" value="{{ request.user.profile.jabatan|default:'' }}">
+                </div>
+                 <div class="col-6 mb-2">
+                    <label class="form-control-label small">Kota / Negara</label>
+                    <div class="input-group">
+                        <input type="text" name="kota" class="form-control" placeholder="Kota" value="{{ request.user.profile.kota|default:'' }}">
+                        <input type="text" name="negara" class="form-control" placeholder="Negara" value="{{ request.user.profile.negara|default:'Indonesia' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label class="form-control-label small">Alamat Lengkap</label>
+                <textarea name="alamat" rows="2" class="form-control">{{ request.user.profile.alamat|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-group mb-0">
+                <label class="form-control-label small">Bio Singkat</label>
+                <textarea name="bio" rows="2" class="form-control">{{ request.user.profile.bio|default:'' }}</textarea>
+            </div>
+
+        </div>
+        <div class="modal-footer py-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if success %}
+<div class="position-fixed bottom-1 end-1 z-index-2">
+  <div class="toast fade show p-2 bg-white shadow" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="ni ni-check-bold text-success me-2"></i>
+        <span class="font-weight-bold text-sm">Profil Berhasil Diupdate!</span>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock content %}

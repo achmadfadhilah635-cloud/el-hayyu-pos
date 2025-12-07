@@ -1,18 +1,22 @@
 from django.urls import path
-from apps.dyn_dt import views 
+from apps.dyn_dt import views
 
 urlpatterns = [
-    path('dynamic-dt/', views.index, name="dynamic_dt"),
-
-    path('create-filter/<str:model_name>/', views.create_filter, name="create_filter"),
-    path('create-page-items/<str:model_name>/', views.create_page_items, name="create_page_items"),
-    path('create-hide-show-items/<str:model_name>/', views.create_hide_show_filter, name="create_hide_show_filter"),
-    path('delete-filter/<str:model_name>/<int:id>/', views.delete_filter, name="delete_filter"),
-    path('create/<str:aPath>/', views.create, name="create"),
-    path('delete/<str:aPath>/<int:id>/', views.delete, name="delete"),
-    path('update/<str:aPath>/<int:id>/', views.update, name="update"),
-
-    path('export-csv/<str:aPath>/', views.ExportCSVView.as_view(), name='export_csv'),
-
-    path('dynamic-dt/<str:aPath>/', views.model_dt, name="model_dt"),
+    # 1. Menu Stok Barang
+    path('product/', views.product_list, name='dynamic_dt'),
+    
+    # 2. Fitur Create/Delete Barang
+    path('create/<str:model_name>/', views.create_product, name='create'),
+    path('delete/<str:model_name>/<int:id>/', views.delete_product, name='delete'),
+    
+    # 3. Fitur Kasir
+    path('kasir/', views.pos_index, name='pos_index'),
+    
+    # 4. API (Jalur Data untuk JavaScript)
+    path('api/get-product/', views.get_product_api, name='api_get_product'),
+    path('api/simpan-transaksi/', views.simpan_transaksi_api, name='api_simpan_transaksi'),
+    path('api/transaksi-detail/<int:id>/', views.get_transaksi_detail_api, name='api_transaksi_detail'),
+    
+    # 5. Cetak Struk
+    path('cetak-struk/<int:id>/', views.cetak_struk, name='cetak_struk'),
 ]

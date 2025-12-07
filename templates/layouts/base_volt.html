@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>EL_HAYYU Store - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f3f4f6; /* Abu-abu soft */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Style Kartu Login */
+        .login-card {
+            background: #ffffff;
+            border-radius: 1rem; /* Sudut melengkung */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Bayangan halus */
+            border: 1px solid #e5e7eb;
+            max-width: 500px;
+            width: 100%;
+        }
+        /* Style Input Form */
+        .form-control {
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #1f2937; /* Warna fokus gelap */
+            box-shadow: 0 0 0 4px rgba(31, 41, 55, 0.1);
+        }
+        /* Style Input Group (Ikon di kiri) */
+        .input-group-text {
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-right: none;
+            color: #6b7280;
+        }
+        /* Perbaikan agar border input menyatu */
+        .input-group .form-control {
+            border-left: none;
+        }
+        /* Tombol Sign In (Gelap ala Volt) */
+        .btn-volt {
+            background-color: #1f2937; /* Hitam kebiruan */
+            color: white;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-volt:hover {
+            background-color: #111827; /* Lebih gelap saat hover */
+            transform: translateY(-1px);
+        }
+        /* Link Kembali */
+        .back-link {
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        .back-link:hover {
+            color: #1f2937;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="d-flex w-100 h-100">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

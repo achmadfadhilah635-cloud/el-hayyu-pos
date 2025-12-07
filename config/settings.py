@@ -185,8 +185,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ### DYNAMIC_DATATB Settings ###
 DYNAMIC_DATATB = {
-    # SLUG -> Import_PATH 
-    'product'  : "apps.pages.models.Product",
+    # 'slug_di_url'  : "lokasi.file.NamaClassModel",
+    'product'        : "apps.dyn_dt.models.Product",
 }
 ########################################
 
@@ -202,4 +202,42 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-########################################
+# --- PENGATURAN LOGIN/LOGOUT ---
+LOGIN_URL = 'login'              # Kalau belum login, lempar ke sini
+LOGIN_REDIRECT_URL = 'index'     # Kalau sukses login, masuk ke Dashboard
+LOGOUT_REDIRECT_URL = 'login'    # Kalau logout, kembali ke halaman login
+# --- KONFIGURASI UPLOAD MEDIA (FOTO) ---
+import os
+
+# URL untuk memanggil gambar di browser
+MEDIA_URL = '/media/'
+
+# Folder fisik tempat menyimpan gambar
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# --- KONFIGURASI TAMPILAN ADMIN (JAZZMIN) ---
+JAZZMIN_SETTINGS = {
+    # Judul di Tab Browser
+    "site_title": "El-Hayyu Admin",
+
+    # Judul di Halaman Login & Dashboard
+    "site_header": "El-Hayyu Store",
+    
+    # Judul Brand di Pojok Kiri Atas
+    "site_brand": "El-Hayyu POS",
+
+    # Logo (Pastikan file logo ada di folder static)
+    # Jika belum ada logo, hapus baris ini atau biarkan default
+    # "site_logo": "assets/img/favicon.png", 
+    
+    # Pesan Selamat Datang di Login
+    "welcome_sign": "Selamat Datang di Sistem Kasir El-Hayyu",
+
+    # Copyright di bawah
+    "copyright": "El-Hayyu Store Ltd",
+    
+    # Menu di Sidebar
+    "search_model": "auth.User",
+
+    # Tampilan UI (Pilih tema warna)
+    "ui_builder_button": False, # Ubah ke True jika ingin utak-atik warna lewat UI
+}

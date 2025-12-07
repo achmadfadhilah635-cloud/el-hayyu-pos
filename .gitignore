@@ -1,17 +1,33 @@
+# --- 1. Virtual Environment (Otak Python) ---
+# Wajib di-ignore karena ukurannya besar dan beda tiap komputer
+venv/
+env/
+.venv/
+
+# --- 2. Database Lokal (PENTING!) ---
+# Jangan di-upload agar tidak menimpa data server
+*.sqlite3
+*.sqlite3-journal
+db.sqlite3
+
+# --- 3. File Sampah Python ---
+__pycache__/
 *.pyc
-*.DS_Store
-*.egg*
+*.pyo
+
+# --- 4. File Upload User & Static ---
+# Media jangan di-upload ke GitHub (biar user upload sendiri di server)
+media/
+staticfiles/
+
+# --- 5. Konfigurasi Rahasia & IDE ---
+.env
+.vscode/
+.idea/
+.DS_Store
+local_settings.py
+
+# --- 6. Lain-lain (Bawaan Template) ---
 /dist/
-/.idea
-/docs/_build/
 /node_modules/
-build/
-env
-/staticfiles/
-
-#src
-#*.sqlite*
-
-#.env
-node_modules
 yarn.lock

@@ -1,0 +1,123 @@
+{% extends 'layouts/base_volt.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* 1. Atur Wrapper Utama */
+    .login-wrapper {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden; /* Mencegah scrollbar muncul */
+        background-color: #f3f4f6; /* Warna cadangan kalau gambar gagal */
+    }
+
+    /* 2. Atur Gambar Background */
+    .bg-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1; /* Di lapisan paling bawah */
+        
+        /* INI KUNCINYA: Memanggil Gambar */
+        background-image: url("{% static 'assets/img/illustrations/signin.svg' %}");
+        
+        /* Agar gambar memenuhi layar & tetap proporsional */
+        background-size: cover; 
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+
+    /* 3. Atur Kartu Login (Supaya ada di depan gambar) */
+    .login-card {
+        position: relative;
+        z-index: 10; /* Di lapisan atas */
+        width: 100%;
+        max-width: 500px; /* Lebar maksimal kartu */
+        padding: 15px;
+    }
+</style>
+
+<div class="login-wrapper">
+
+    <div class="bg-image"></div>
+
+    <div class="login-card container">
+        
+        <div class="text-center mb-4">
+            <a href="{% url 'index' %}" class="btn btn-sm btn-white text-dark shadow-sm rounded-pill px-3">
+                <i class="fas fa-arrow-left me-2"></i> Back to homepage
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-lg rounded-3 bg-white">
+            <div class="card-body p-4 p-lg-5">
+                
+                <div class="text-center mb-4">
+                    <h1 class="h3 fw-bold text-dark">Sign in to our platform</h1>
+                    <p class="text-muted small">El_Hayyu Store Admin</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger p-2 mb-3 text-center small border-0 bg-danger text-white rounded">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Username / Password Salah!
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-bold small text-secondary">Your Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-envelope text-secondary"></i>
+                            </span>
+                            <input type="text" name="username" class="form-control bg-light border-start-0" placeholder="Username" id="id_username" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label fw-bold small text-secondary">Your Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-lock text-secondary"></i>
+                            </span>
+                            <input type="password" name="password" class="form-control bg-light border-start-0" placeholder="Password" id="id_password" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="remember">
+                            <label class="form-check-label small text-secondary" for="remember">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="small text-primary fw-bold text-decoration-none">Lost password?</a>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-dark py-2 fw-bold" style="background-color: #1f2937;">Sign in</button>
+                    </div>
+                </form>
+
+                <div class="d-flex justify-content-center align-items-center mt-4">
+                    <span class="fw-normal small text-muted">
+                        Not registered?
+                        <a href="{% url 'register' %}" class="fw-bold text-dark text-decoration-none ms-1">Create account</a>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
