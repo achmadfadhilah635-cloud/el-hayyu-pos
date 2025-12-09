@@ -3,7 +3,10 @@
 <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
   
   <div class="sidenav-header" style="height: auto; padding: 1.5rem 1rem;">
-    <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+    <a href="javascript:;" class="btn btn-outline-danger btn-xs position-absolute end-0 top-0 mt-3 me-3 d-xl-none" id="iconSidenav">
+        <i class="fas fa-times me-1"></i> Tutup
+    </a>
+
     <a class="navbar-brand m-0 p-0" href="/">
       <i class="fas fa-store text-primary" style="font-size: 24px; color: #5e72e4 !important; vertical-align: middle;"></i>
       <span class="ms-2 font-weight-bold" style="font-size: 1.2em; vertical-align: middle;">
@@ -48,28 +51,23 @@
                 <span class="sidenav-normal"> Ringkasan Toko </span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {% if segment == 'analytics' %}active{% endif %}" href="{% url 'analytics' %}">
-                <span class="sidenav-normal"> Analitik Toko </span>
-              </a>
-            </li>
           </ul>
         </div>
       </li>
 
       <li class="nav-item">
-        <a data-bs-toggle="collapse" href="#menuManajemen" class="nav-link {% if 'product' in request.path or segment == 'pos' or segment == 'billing' %}active{% else %}collapsed{% endif %}" aria-controls="menuManajemen" role="button" aria-expanded="false">
+        <a data-bs-toggle="collapse" href="#menuManajemen" class="nav-link {% if 'product' in request.path or segment == 'pos' or segment == 'transactions' %}active{% else %}collapsed{% endif %}" aria-controls="menuManajemen" role="button" aria-expanded="false">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="ni ni-bag-17 text-warning text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Manajemen Toko</span>
         </a>
 
-        <div class="collapse {% if 'product' in request.path or segment == 'pos' or segment == 'billing' %}show{% endif %}" id="menuManajemen">
+        <div class="collapse {% if 'product' in request.path or segment == 'pos' or segment == 'transactions' %}show{% endif %}" id="menuManajemen">
             <ul class="nav ms-4">
                 
                 <li class="nav-item">
-                    <a class="nav-link {% if 'product' in request.path %}active{% endif %}" href="/product/">
+                    <a class="nav-link {% if 'product' in request.path %}active{% endif %}" href="{% url 'dynamic_dt' %}">
                         <span class="sidenav-mini-icon"> S </span>
                         <span class="sidenav-normal"> Stok Barang </span>
                     </a>
@@ -83,7 +81,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {% if segment == 'billing' %}active{% endif %}" href="{% url 'billing' %}">
+                    <a class="nav-link {% if segment == 'transactions' %}active{% endif %}" href="{% url 'transaction_list' %}">
                         <span class="sidenav-mini-icon"> L </span>
                         <span class="sidenav-normal"> Laporan Keuangan </span>
                     </a>
@@ -112,10 +110,17 @@
         </a>
       </li>
       {% endif %}
+
+      <li class="nav-item d-xl-none mt-4 text-center">
+        <button class="btn btn-secondary w-80" onclick="document.querySelector('body').classList.remove('g-sidenav-show')">
+            <i class="fas fa-check me-2"></i> Oke / Tutup Menu
+        </button>
+      </li>
+
     </ul>
   </div>
   
-  <div class="sidenav-footer mx-3 mt-5 pt-3">
+  <div class="sidenav-footer mx-3 mt-3 pt-3">
     <div class="card card-plain shadow-none" id="sidenavCard">
       <img class="w-50 mx-auto" src="{% static 'assets/img/illustrations/icon-documentation.svg' %}" alt="sidebar_illustration">
       <div class="card-body text-center p-3 w-100 pt-0">

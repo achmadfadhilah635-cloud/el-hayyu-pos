@@ -230,3 +230,20 @@ def cetak_struk(request, id):
         return render(request, 'pos/struk.html', context)
     except Transaksi.DoesNotExist:
         return HttpResponse("Struk tidak ditemukan")
+    # ... (Pastikan import models sudah ada di paling atas)
+# from .models import Product, Transaksi, DetailTransaksi
+
+# ==========================================
+# 7. HALAMAN LAPORAN TRANSAKSI (KEUANGAN)
+# ==========================================
+@login_required(login_url="/accounts/login/")
+def transaction_list(request):
+    # Ambil semua transaksi, urutkan dari yang paling baru (terbaru diatas)
+    transactions = Transaksi.objects.all().order_by('-tanggal')
+
+    context = {
+        'segment': 'transactions',
+        'page_title': 'Laporan Keuangan',
+        'transactions': transactions
+    }
+    return render(request, 'dyn_dt/transaksi_list.html', context)
