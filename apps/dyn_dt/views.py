@@ -1,16 +1,27 @@
-from django.shortcuts import render, redirect
+import json
+from datetime import datetime
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Product
+from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
+from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
 
-# --- MENAMPILKAN TABEL ---
+# Import Models
+from .models import Product, Transaksi, DetailTransaksi
+
+# ==========================================
+# 1. HALAMAN DAFTAR PRODUK (GUDANG)
+# ==========================================
 @login_required(login_url="/accounts/login/")
 def product_list(request):
+    # Ambil semua data produk urutkan dari yang terbaru
     items = Product.objects.all().order_by('-id')
 
-    # Update: Tambahkan 'kode_barang' di urutan pertama
+    # Nama kolom untuk tabel di HTML
     field_names = ['kode_barang', 'nama_barang', 'kategori', 'harga_modal', 'harga_jual', 'stok', 'terjual']
     
+    # Ambil semua nama field dari model untuk keperluan filter dinamis (opsional)
     all_fields = [f.name for f in Product._meta.fields]
 
     context = {
@@ -23,13 +34,25 @@ def product_list(request):
     }
     return render(request, 'dyn_dt/model.html', context)
 
-# --- MENYIMPAN DATA BARU ---
+# ==========================================
+# 2. HALAMAN UTAMA KASIR (POS)
+# ==========================================
+@login_required(login_url='/accounts/login/')
+def pos_index(request):
+    context = {
+        'segment': 'pos',
+        'page_title': 'Kasir Toko'
+    }
+    return render(request, 'pos/index.html', context)
+
+# ==========================================
+# 3. FUNGSI CRUD (Tambah & Hapus Barang)
+# ==========================================
 @login_required(login_url="/accounts/login/")
 def create_product(request, model_name):
     if request.method == "POST":
         try:
-            # Ambil data form
-            # Update: Ambil kode_barang
+            # Ambil data dari form HTML
             kode    = request.POST.get('kode_barang')
             nama    = request.POST.get('nama_barang')
             kat     = request.POST.get('kategori')
@@ -38,9 +61,9 @@ def create_product(request, model_name):
             stok    = request.POST.get('stok') or 0
             terjual = request.POST.get('terjual') or 0
 
-            # Simpan
+            # Simpan ke Database
             Product.objects.create(
-                kode_barang = kode, # Simpan Kode
+                kode_barang = kode,
                 nama_barang = nama,
                 kategori    = kat,
                 harga_modal = int(modal),
@@ -48,154 +71,131 @@ def create_product(request, model_name):
                 stok        = int(stok),
                 terjual     = int(terjual)
             )
-            print("✅ Sukses Simpan Barang dengan Barcode!")
+            print("✅ Sukses Simpan Barang!")
         except Exception as e:
             print(f"❌ Gagal Simpan: {e}")
 
     return redirect('dynamic_dt') 
 
-# --- HAPUS DATA ---
 @login_required(login_url="/accounts/login/")
 def delete_product(request, model_name, id):
     try:
+        # Cari barang berdasarkan ID lalu hapus
         Product.objects.get(id=id).delete()
     except:
         pass
     return redirect('dynamic_dt')
-# ... kode yang sudah ada ...
 
-# VIEW HALAMAN KASIR
-@login_required(login_url='/accounts/login/')
-def pos_index(request):
-    context = {
-        'segment': 'pos',
-        'page_title': 'Kasir Toko'
-    }
-    return render(request, 'pos/index.html', context)
-from django.http import JsonResponse
-
-# --- API GET PRODUCT (UNTUK SEARCH & SCAN) ---
+# ==========================================
+# 4. API PENCARIAN & SCANNER
+# ==========================================
 @login_required(login_url='/accounts/login/')
 def get_product_api(request):
-    query = request.GET.get('term', '')
+    query = request.GET.get('term', '').strip()
     results = []
     
     if query:
-        # 1. Prioritas: Cari Barcode yang SAMA PERSIS (Exact Match)
-        # Ini penting agar saat scan "123", tidak muncul "12345"
-        exact_match = Product.objects.filter(barcode=query).first()
+        # A. Cari Kode Barang yang SAMA PERSIS (Prioritas Scanner)
+        exact_match = Product.objects.filter(kode_barang=query).first()
         
         if exact_match:
-            # Jika barcode cocok, langsung kembalikan 1 produk itu saja
             item = {
                 'id': exact_match.id,
-                'text': f"{exact_match.barcode} - {exact_match.nama_barang}",
+                'text': f"{exact_match.kode_barang} - {exact_match.nama_barang}",
                 'nama': exact_match.nama_barang,
                 'harga': exact_match.harga_jual,
                 'stok': exact_match.stok,
-                'barcode': exact_match.barcode
+                'kode_barang': exact_match.kode_barang
             }
             results.append(item)
         else:
-            # 2. Jika bukan barcode, cari berdasarkan Nama (mirip/contains)
-            products = Product.objects.filter(nama_barang__icontains=query)[:10]
+            # B. Cari Nama atau Kode yang MIRIP (Pencarian Manual)
+            products = Product.objects.filter(
+                Q(nama_barang__icontains=query) | 
+                Q(kode_barang__icontains=query)
+            )[:10]
+
             for p in products:
                 results.append({
                     'id': p.id,
-                    'text': f"{p.barcode} - {p.nama_barang} (Stok: {p.stok})",
+                    'text': f"{p.kode_barang} - {p.nama_barang} (Stok: {p.stok})",
                     'nama': p.nama_barang,
                     'harga': p.harga_jual,
                     'stok': p.stok,
-                    'barcode': p.barcode
+                    'kode_barang': p.kode_barang
                 })
                 
     return JsonResponse({'results': results})
-    
-    return JsonResponse(data)
-import json
-from datetime import datetime
-from django.db import transaction
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Product, Transaksi, DetailTransaksi
 
+# ==========================================
+# 5. API SIMPAN TRANSAKSI
+# ==========================================
 @csrf_exempt
 def simpan_transaksi_api(request):
     if request.method == 'POST':
         try:
-            # 1. BACA DATA DARI JAVASCRIPT
             data = json.loads(request.body)
-            print("Data Diterima:", data) # Cek di terminal hitam
-
             keranjang = data.get('keranjang')
-            bayar = int(data.get('bayar'))
-            total = int(data.get('total'))
-            
-            # Hitung kembalian di server biar aman
+            bayar = int(data.get('bayar', 0))
+            total = int(data.get('total', 0))
             kembali = bayar - total
 
             if not keranjang:
                 return JsonResponse({'status': 'error', 'message': 'Keranjang kosong!'})
 
-            # 2. MULAI TRANSAKSI DATABASE
             with transaction.atomic():
-                # A. Buat Header Struk
+                # A. Header Struk
                 no_struk = f"TRX-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-                
-                transaksi_baru = Transaksi.objects.create(
+                trx_baru = Transaksi.objects.create(
                     kode_transaksi = no_struk,
                     total_belanja  = total,
                     uang_bayar     = bayar,
                     kembalian      = kembali
                 )
 
-                # B. Simpan Detail Barang
+                # B. Detail Barang
                 for item in keranjang:
                     try:
                         produk = Product.objects.get(id=item['id'])
                     except Product.DoesNotExist:
-                        raise Exception(f"Barang ID {item['id']} hilang dari database!")
+                        raise Exception(f"Barang ID {item['id']} tidak ditemukan")
 
-                    # Cek Stok
-                    if produk.stok < item['qty']:
-                        raise Exception(f"Stok {produk.nama_barang} tidak cukup! Sisa: {produk.stok}")
+                    # Validasi Stok
+                    qty_beli = int(item['qty'])
+                    if produk.stok < qty_beli:
+                        raise Exception(f"Stok {produk.nama_barang} kurang! Sisa: {produk.stok}")
 
                     # Kurangi Stok
-                    produk.stok -= item['qty']
-                    produk.terjual += item['qty']
+                    produk.stok -= qty_beli
+                    produk.terjual += qty_beli
                     produk.save()
 
                     # Simpan Detail
                     DetailTransaksi.objects.create(
-                        transaksi      = transaksi_baru,
+                        transaksi      = trx_baru,
                         produk         = produk,
-                        harga_saat_itu = item['harga'],
-                        qty            = item['qty'],
-                        subtotal       = item['harga'] * item['qty']
+                        harga_saat_itu = int(item['harga']),
+                        qty            = qty_beli,
+                        subtotal       = int(item['harga']) * qty_beli
                     )
 
-            # 3. SUKSES
             return JsonResponse({'status': 'success', 'no_struk': no_struk})
 
         except Exception as e:
-            # 4. GAGAL (Print errornya ke terminal biar ketahuan)
-            print(f"❌ ERROR TRANSAKSI: {e}")
+            print(f"❌ Error Transaksi: {e}")
             return JsonResponse({'status': 'error', 'message': str(e)})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid Request'})
-# ... (kode sebelumnya)
 
-# --- API AMBIL DETAIL TRANSAKSI ---
+# ==========================================
+# 6. API DETAIL & CETAK STRUK
+# ==========================================
 @login_required(login_url='/accounts/login/')
 def get_transaksi_detail_api(request, id):
     try:
-        # 1. Cari Transaksi Induk
-        transaksi = Transaksi.objects.get(id=id)
+        trx = Transaksi.objects.get(id=id)
+        details = DetailTransaksi.objects.filter(transaksi=trx)
         
-        # 2. Ambil Anak-anaknya (Detail Barang)
-        details = DetailTransaksi.objects.filter(transaksi=transaksi)
-        
-        # 3. Bungkus jadi JSON
         item_list = []
         for d in details:
             item_list.append({
@@ -207,27 +207,24 @@ def get_transaksi_detail_api(request, id):
             
         return JsonResponse({
             'status': 'success',
-            'no_struk': transaksi.kode_transaksi,
-            'tanggal': transaksi.tanggal.strftime("%d %b %Y %H:%M"),
+            'no_struk': trx.kode_transaksi,
+            'tanggal': trx.tanggal.strftime("%d %b %Y %H:%M"),
             'items': item_list
         })
-        
     except Transaksi.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Transaksi tidak ditemukan'})
-    # ... (kode sebelumnya)
 
-# --- VIEW CETAK STRUK (Thermal Printer Layout) ---
 @login_required(login_url='/accounts/login/')
 def cetak_struk(request, id):
     try:
-        transaksi = Transaksi.objects.get(id=id)
-        details = DetailTransaksi.objects.filter(transaksi=transaksi)
+        trx = Transaksi.objects.get(id=id)
+        details = DetailTransaksi.objects.filter(transaksi=trx)
         
         context = {
-            'trx': transaksi,
+            'trx': trx,
             'items': details,
-            'store_name': 'EL_HAYYU STORE',
-            'store_address': 'Jl. Raya Coding No. 1, Internet', # Ganti alamat toko Mas
+            'store_name': 'EL_HAYYU POS',
+            'store_address': 'Jl. Bisnis No. 1, Internet',
             'store_phone': '0812-3456-7890'
         }
         return render(request, 'pos/struk.html', context)

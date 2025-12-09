@@ -1,22 +1,20 @@
 from django.urls import path
-from apps.dyn_dt import views
+from . import views
 
 urlpatterns = [
-    # 1. Menu Stok Barang
+    # 1. Halaman Tampilan (HTML)
     path('product/', views.product_list, name='dynamic_dt'),
+    path('kasir/', views.pos_index, name='pos_index'), # <--- Pastikan ini ada
+
+    # 2. Fitur CRUD Produk
+    path('product/create/<str:model_name>/', views.create_product, name='product_create'),
+    path('product/delete/<str:model_name>/<int:id>/', views.delete_product, name='product_delete'),
+
+    # 3. API (Jembatan Data untuk JavaScript)
+    path('api/get_product/', views.get_product_api, name='get_product_api'),
+    path('api/simpan_transaksi/', views.simpan_transaksi_api, name='simpan_transaksi_api'),
     
-    # 2. Fitur Create/Delete Barang
-    path('create/<str:model_name>/', views.create_product, name='create'),
-    path('delete/<str:model_name>/<int:id>/', views.delete_product, name='delete'),
-    
-    # 3. Fitur Kasir
-    path('kasir/', views.pos_index, name='pos_index'),
-    
-    # 4. API (Jalur Data untuk JavaScript)
-    path('api/get-product/', views.get_product_api, name='api_get_product'),
-    path('api/simpan-transaksi/', views.simpan_transaksi_api, name='api_simpan_transaksi'),
-    path('api/transaksi-detail/<int:id>/', views.get_transaksi_detail_api, name='api_transaksi_detail'),
-    
-    # 5. Cetak Struk
-    path('cetak-struk/<int:id>/', views.cetak_struk, name='cetak_struk'),
+    # 4. Detail & Cetak
+    path('api/transaksi/<int:id>/', views.get_transaksi_detail_api, name='get_transaksi_detail'),
+    path('kasir/cetak/<int:id>/', views.cetak_struk, name='cetak_struk'),
 ]

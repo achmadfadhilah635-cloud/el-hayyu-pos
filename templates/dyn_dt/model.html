@@ -1,5 +1,6 @@
 {% extends "layouts/base.html" %}
-{% load static get_attribute %}
+
+{% block title %} Stok Barang Gudang {% endblock %}
 
 {% block content %}
 
@@ -7,68 +8,97 @@
     <div class="row">
         <div class="col-12">
             <div class="card mb-4">
-                <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                    <h6>{{ page_title }}</h6>
-                    <button type="button" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#modal-create">
-                        + Tambah Barang
-                    </button>
+                <div class="card-header pb-0">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <h6>Stok Barang Gudang</h6>
+                        </div>
+                        
+                        <div class="col-md-4 my-2 my-md-0">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Cari Nama / Kode..." onkeyup="filterTable()">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#modal-create">
+                                <i class="fas fa-plus me-2"></i>Tambah Barang
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
+                        <table class="table align-items-center mb-0" id="tableStok">
                             <thead>
                                 <tr>
-                                    {% for field in db_field_names %}
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">
-                                        {{ field|title }}
-                                    </th>
-                                    {% endfor %}
-                                    <th class="text-secondary opacity-7">Aksi</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kode / ID</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Barang</th>
+                                    <th class="text-secondary opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in items %}
-                                <tr>
-                                    {% for field in db_field_names %}
-                                    <td class="ps-3">
-                                        <span class="text-secondary text-xs font-weight-bold">
-                                            {{ item|getattribute:field }}
-                                        </span>
+                                <tr class="item-row">
+                                    <td>
+                                        <div class="d-flex px-3 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm searchable">{{ item.kode_barang }}</h6>
+                                            </div>
+                                        </div>
                                     </td>
-                                    {% endfor %}
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0 searchable">{{ item.nama_barang }}</p>
+                                        <span class="text-xs text-secondary">{{ item.kategori }}</span>
+                                    </td>
                                     <td class="align-middle text-center">
-                                        <a href="{% url 'delete' link item.id %}" class="text-danger font-weight-bold text-xs" onclick="return confirm('Yakin hapus barang ini?')">
-                                            Hapus
-                                        </a>
+                                        <button class="btn btn-link text-secondary mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#detail-{{ item.id }}">
+                                            <i class="fas fa-chevron-down text-primary"></i> Detail
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr class="detail-row">
+                                    <td colspan="3" class="p-0 border-0">
+                                        <div class="collapse bg-gray-100" id="detail-{{ item.id }}">
+                                            <div class="p-3 ps-5">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="list-group list-group-flush bg-transparent">
+                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Harga Modal:</strong> Rp {{ item.harga_modal }}
+                                                            </li>
+                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Harga Jual:</strong> <span class="text-success fw-bold">Rp {{ item.harga_jual }}</span>
+                                                            </li>
+                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Sisa Stok:</strong> {{ item.stok }} Unit
+                                                            </li>
+                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Terjual:</strong> {{ item.terjual }} Unit
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6 d-flex align-items-center justify-content-end">
+                                                        <a href="{% url 'product_delete' 'product' item.id %}" class="btn btn-outline-danger btn-sm mb-0" onclick="return confirm('Hapus barang ini?')">
+                                                            <i class="fas fa-trash me-1"></i> Hapus
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="10" class="text-center py-4">
-                                        <span class="text-sm">Belum ada barang. Silakan tambah!</span>
-                                    </td>
+                                    <td colspan="3" class="text-center py-4 text-secondary">Data kosong.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                </div>
-                
-                <div class="card-footer py-4">
-                    {% if items.has_other_pages %}
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-end mb-0">
-                            {% if items.has_previous %}
-                            <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}"><</a></li>
-                            {% endif %}
-                            <li class="page-item active"><a class="page-link" href="#">{{ items.number }}</a></li>
-                            {% if items.has_next %}
-                            <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}">></a></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -86,10 +116,9 @@
             </div>
             
             <div class="modal-body">
-                
                 <div id="reader" style="width: 100%; display:none; margin-bottom: 20px;"></div>
 
-                <form action="{% url 'create' link %}" method="POST">
+                <form action="{% url 'product_create' 'product' %}" method="POST">
                     {% csrf_token %}
                     
                     <div class="form-group mb-3">
@@ -127,8 +156,8 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group mb-3">
-                                <label class="form-control-label">Harga Jual</label>
-                                <input class="form-control" type="number" name="harga_jual" value="0">
+                                <label class="form-control-label text-primary fw-bold">Harga Jual</label>
+                                <input class="form-control" type="number" name="harga_jual" value="0" required>
                             </div>
                         </div>
                     </div>
@@ -164,6 +193,34 @@
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <script>
+    // --- 1. SCRIPT UNTUK FILTER TABEL (PENCARIAN MANUAL) ---
+    function filterTable() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("tableStok");
+        var tr = table.getElementsByClassName("item-row");
+        var trDetail = table.getElementsByClassName("detail-row");
+
+        for (var i = 0; i < tr.length; i++) {
+            var tds = tr[i].getElementsByClassName("searchable");
+            var found = false;
+            for (var j = 0; j < tds.length; j++) {
+                if (tds[j].innerText.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                tr[i].style.display = "";
+                if (trDetail[i]) trDetail[i].style.display = ""; 
+            } else {
+                tr[i].style.display = "none";
+                if (trDetail[i]) trDetail[i].style.display = "none";
+            }
+        }
+    }
+
+    // --- 2. SCRIPT KAMERA SCANNER (DARI KODE MAS) ---
     let html5QrcodeScanner = null;
 
     function toggleCamera() {
@@ -172,21 +229,17 @@
         if (readerDiv.style.display === 'none') {
             readerDiv.style.display = 'block';
             
-            // KONFIGURASI SUPER SENSITIF
+            // Konfigurasi Kamera
             const config = { 
-                fps: 20, // Scan 20 kali per detik (lebih cepat)
-                qrbox: { width: 250, height: 150 }, // Kotak fokus
+                fps: 20, 
+                qrbox: { width: 250, height: 150 },
                 aspectRatio: 1.0,
                 experimentalFeatures: {
-                    useBarCodeDetectorIfSupported: true // PAKAI AI BROWSER (PENTING!)
-                },
-                rememberLastUsedCamera: true
+                    useBarCodeDetectorIfSupported: true
+                }
             };
             
-            // Inisialisasi
-            html5QrcodeScanner = new Html5QrcodeScanner("reader", config, /* verbose= */ false);
-            
-            // Render
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", config, false);
             html5QrcodeScanner.render(onScanSuccess, onScanFailure);
             
         } else {
@@ -195,27 +248,25 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        // 1. Masukkan hasil ke kotak input
+        // Masukkan hasil scan ke input
         const inputField = document.getElementById('input_barcode');
         if (inputField) {
             inputField.value = decodedText;
             
-            // Efek kedip visual
-            inputField.style.backgroundColor = "#90EE90"; // Hijau muda
+            // Efek Visual (Kedip Hijau)
+            inputField.style.backgroundColor = "#90EE90";
             setTimeout(() => inputField.style.backgroundColor = "white", 500);
             
-            // Pindah fokus ke Nama Barang
+            // Pindah fokus ke Nama Barang (biar langsung ngetik nama)
             document.getElementsByName('nama_barang')[0].focus();
-        } else {
-            alert("Error: ID 'input_barcode' tidak ditemukan.");
         }
         
-        // 2. Matikan kamera otomatis
+        // Matikan kamera setelah dapat barcode
         stopCamera();
     }
 
     function onScanFailure(error) {
-        // Biarkan kosong
+        // Biarkan kosong agar tidak spam console log
     }
 
     function stopCamera() {
