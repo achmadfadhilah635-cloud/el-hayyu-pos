@@ -112,22 +112,28 @@ DB_HOST     = os.getenv('DB_HOST'     , None)
 DB_PORT     = os.getenv('DB_PORT'     , None)
 DB_NAME     = os.getenv('DB_NAME'     , None)
 
-if DB_ENGINE and DB_NAME and DB_USERNAME:
-    DATABASES = { 
-      'default': {
-        'ENGINE'  : 'django.db.backends.' + DB_ENGINE, 
-        'NAME'    : DB_NAME,
-        'USER'    : DB_USERNAME,
-        'PASSWORD': DB_PASS,
-        'HOST'    : DB_HOST,
-        'PORT'    : DB_PORT,
-        }, 
+# Cek: Apakah kita sedang di server PythonAnywhere?
+if 'PYTHONANYWHERE_DOMAIN' in os.environ:
+    # >> JIKA DI SERVER: PAKAI MYSQL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'budirahayu$default',           # Nama Database Mas
+            'USER': 'budirahayu',                   # Username Mas
+            'PASSWORD': 'Fadhil811#',    # <--- WAJIB GANTI DENGAN PASSWORD BARU TADI!
+            'HOST': 'budirahayu.mysql.pythonanywhere-services.com',
+            'PORT': '3306',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
     }
 else:
+    # >> JIKA DI LAPTOP: PAKAI SQLITE (Biar Ringan)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
