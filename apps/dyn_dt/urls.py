@@ -22,4 +22,5 @@ urlpatterns = [
     # 5. PENGATURAN TOKO
     path('settings/', views.settings_toko, name='settings_toko'),
     path('api/settings/', views.get_toko_settings_api, name='get_toko_settings_api'),
+    path('product/export/csv/', views.export_stock_csv, name='export_stock_csv'),
 ]

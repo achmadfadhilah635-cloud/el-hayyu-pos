@@ -4,10 +4,7 @@
   id="sidenav-main">
 
   <div class="sidenav-header" style="height: auto; padding: 1.5rem 1rem;">
-    <a href="javascript:;" class="btn btn-outline-danger btn-xs position-absolute end-0 top-0 mt-3 me-3 d-xl-none"
-      id="iconSidenav">
-      <i class="fas fa-times me-1"></i> Tutup
-    </a>
+
 
     <a class="navbar-brand m-0 p-0" href="/">
       <i class="fas fa-store text-primary"
@@ -95,7 +92,17 @@
             </li>
 
             <li class="nav-item">
-              <span class="sidenav-normal"> Laporan Keuangan </span>
+              <a class="nav-link {% if segment == 'transactions' %}active{% endif %}"
+                href="{% url 'transaction_list' %}">
+                <span class="sidenav-mini-icon"> L </span>
+                <span class="sidenav-normal"> Laporan Keuangan </span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link {% if segment == 'charts' %}active{% endif %}" href="{% url 'charts' %}">
+                <span class="sidenav-mini-icon"> A </span>
+                <span class="sidenav-normal"> Analisa Penjualan </span>
               </a>
             </li>
 
@@ -132,12 +139,7 @@
       </li>
       {% endif %}
 
-      <li class="nav-item d-xl-none mt-4 text-center">
-        <button class="btn btn-secondary w-80"
-          onclick="document.querySelector('body').classList.remove('g-sidenav-show')">
-          <i class="fas fa-check me-2"></i> Oke / Tutup Menu
-        </button>
-      </li>
+
 
     </ul>
   </div>

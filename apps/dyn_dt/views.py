@@ -1,4 +1,5 @@
 import json
+import csv
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -241,6 +242,20 @@ def cetak_struk(request, id):
         return HttpResponse("Struk tidak ditemukan")
     except Exception as e:
         return HttpResponse(f"Terjadi kesalahan: {e}")
+
+@login_required 
+def export_stock_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="stok_barang.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Kode Barang', 'Nama Barang', 'Kategori', 'Harga Modal', 'Harga Jual', 'Stok', 'Terjual'])
+
+    products = Product.objects.all().values_list('kode_barang', 'nama_barang', 'kategori', 'harga_modal', 'harga_jual', 'stok', 'terjual')
+    for product in products:
+        writer.writerow(product)
+
+    return response
     # ... (Pastikan import models sudah ada di paling atas)
 # from .models import Product, Transaksi, DetailTransaksi
 

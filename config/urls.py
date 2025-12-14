@@ -29,6 +29,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     # 4. APLIKASI
+    path('analysis/', include('apps.charts.urls')), 
     path('', include('apps.dyn_dt.urls')), 
 ]
 
