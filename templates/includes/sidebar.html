@@ -1,30 +1,36 @@
 {% load i18n static admin_argon %}
 
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
-  
+<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+  id="sidenav-main">
+
   <div class="sidenav-header" style="height: auto; padding: 1.5rem 1rem;">
-    <a href="javascript:;" class="btn btn-outline-danger btn-xs position-absolute end-0 top-0 mt-3 me-3 d-xl-none" id="iconSidenav">
-        <i class="fas fa-times me-1"></i> Tutup
+    <a href="javascript:;" class="btn btn-outline-danger btn-xs position-absolute end-0 top-0 mt-3 me-3 d-xl-none"
+      id="iconSidenav">
+      <i class="fas fa-times me-1"></i> Tutup
     </a>
 
     <a class="navbar-brand m-0 p-0" href="/">
-      <i class="fas fa-store text-primary" style="font-size: 24px; color: #5e72e4 !important; vertical-align: middle;"></i>
+      <i class="fas fa-store text-primary"
+        style="font-size: 24px; color: #5e72e4 !important; vertical-align: middle;"></i>
       <span class="ms-2 font-weight-bold" style="font-size: 1.2em; vertical-align: middle;">
-         <span style="background: linear-gradient(45deg, #FF0080, #7928CA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: -0.5px;">EL_HAYYU</span>
-         <span style="font-weight: 400; font-size: 0.7em; color: #8898aa; text-transform: uppercase; letter-spacing: 1px;">Store</span>
+        <span
+          style="background: linear-gradient(45deg, #FF0080, #7928CA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: -0.5px;">EL_HAYYU</span>
+        <span
+          style="font-weight: 400; font-size: 0.7em; color: #8898aa; text-transform: uppercase; letter-spacing: 1px;">Store</span>
       </span>
     </a>
   </div>
-  
+
   <hr class="horizontal dark mt-2 mb-2">
-  
+
   <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
     <ul class="navbar-nav">
 
       {% if request.user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link {% if segment == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
-          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-user-circle text-dark text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1 font-weight-bold">Profil Saya</span>
@@ -37,13 +43,16 @@
       </li>
 
       <li class="nav-item">
-        <a data-bs-toggle="collapse" href="#menuBeranda" class="nav-link {% if segment == 'index' or segment == 'analytics' %}active{% else %}collapsed{% endif %}" aria-controls="menuBeranda" role="button" aria-expanded="false">
-          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+        <a data-bs-toggle="collapse" href="#menuBeranda"
+          class="nav-link {% if segment == 'index' or segment == 'analytics' %}active{% else %}collapsed{% endif %}"
+          aria-controls="menuBeranda" role="button" aria-expanded="false">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1">Beranda</span>
         </a>
-        
+
         <div class="collapse {% if segment == 'index' or segment == 'analytics' %}show{% endif %}" id="menuBeranda">
           <ul class="nav ms-4">
             <li class="nav-item">
@@ -56,45 +65,56 @@
       </li>
 
       <li class="nav-item">
-        <a data-bs-toggle="collapse" href="#menuManajemen" class="nav-link {% if 'product' in request.path or segment == 'pos' or segment == 'transactions' %}active{% else %}collapsed{% endif %}" aria-controls="menuManajemen" role="button" aria-expanded="false">
-            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="ni ni-bag-17 text-warning text-sm opacity-10"></i>
-            </div>
-            <span class="nav-link-text ms-1">Manajemen Toko</span>
+        <a data-bs-toggle="collapse" href="#menuManajemen"
+          class="nav-link {% if 'product' in request.path or segment == 'pos' or segment == 'transactions' %}active{% else %}collapsed{% endif %}"
+          aria-controls="menuManajemen" role="button" aria-expanded="false">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="ni ni-bag-17 text-warning text-sm opacity-10"></i>
+          </div>
+          <span class="nav-link-text ms-1">Manajemen Toko</span>
         </a>
 
-        <div class="collapse {% if 'product' in request.path or segment == 'pos' or segment == 'transactions' %}show{% endif %}" id="menuManajemen">
-            <ul class="nav ms-4">
-                
-                <li class="nav-item">
-                    <a class="nav-link {% if 'product' in request.path %}active{% endif %}" href="{% url 'dynamic_dt' %}">
-                        <span class="sidenav-mini-icon"> S </span>
-                        <span class="sidenav-normal"> Stok Barang </span>
-                    </a>
-                </li>
+        <div
+          class="collapse {% if 'product' in request.path or segment == 'pos' or segment == 'transactions' %}show{% endif %}"
+          id="menuManajemen">
+          <ul class="nav ms-4">
 
-                <li class="nav-item">
-                    <a class="nav-link {% if segment == 'pos' %}active{% endif %}" href="{% url 'pos_index' %}">
-                        <span class="sidenav-mini-icon"> K </span>
-                        <span class="sidenav-normal"> Kasir / Transaksi </span>
-                    </a>
-                </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'product' in request.path %}active{% endif %}" href="{% url 'dynamic_dt' %}">
+                <span class="sidenav-mini-icon"> S </span>
+                <span class="sidenav-normal"> Stok Barang </span>
+              </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {% if segment == 'transactions' %}active{% endif %}" href="{% url 'transaction_list' %}">
-                        <span class="sidenav-mini-icon"> L </span>
-                        <span class="sidenav-normal"> Laporan Keuangan </span>
-                    </a>
-                </li>
+            <li class="nav-item">
+              <a class="nav-link {% if segment == 'pos' %}active{% endif %}" href="{% url 'pos_index' %}">
+                <span class="sidenav-mini-icon"> K </span>
+                <span class="sidenav-normal"> Kasir / Transaksi </span>
+              </a>
+            </li>
 
-            </ul>
+            <li class="nav-item">
+              <span class="sidenav-normal"> Laporan Keuangan </span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link {% if segment == 'settings' %}active{% endif %}" href="{% url 'settings_toko' %}">
+                <span class="sidenav-mini-icon"> P </span>
+                <span class="sidenav-normal"> Pengaturan Toko </span>
+              </a>
+            </li>
+
+          </ul>
         </div>
       </li>
 
       {% if request.user.is_authenticated %}
       <li class="nav-item mt-3">
         <a class="nav-link" href="{% url 'logout' %}">
-          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-button-power text-danger text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1">Keluar (Logout)</span>
@@ -103,7 +123,8 @@
       {% else %}
       <li class="nav-item mt-3">
         <a class="nav-link" href="{% url 'login' %}">
-          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-key-25 text-info text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1">Masuk (Login)</span>
@@ -112,17 +133,19 @@
       {% endif %}
 
       <li class="nav-item d-xl-none mt-4 text-center">
-        <button class="btn btn-secondary w-80" onclick="document.querySelector('body').classList.remove('g-sidenav-show')">
-            <i class="fas fa-check me-2"></i> Oke / Tutup Menu
+        <button class="btn btn-secondary w-80"
+          onclick="document.querySelector('body').classList.remove('g-sidenav-show')">
+          <i class="fas fa-check me-2"></i> Oke / Tutup Menu
         </button>
       </li>
 
     </ul>
   </div>
-  
+
   <div class="sidenav-footer mx-3 mt-3 pt-3">
     <div class="card card-plain shadow-none" id="sidenavCard">
-      <img class="w-50 mx-auto" src="{% static 'assets/img/illustrations/icon-documentation.svg' %}" alt="sidebar_illustration">
+      <img class="w-50 mx-auto" src="{% static 'assets/img/illustrations/icon-documentation.svg' %}"
+        alt="sidebar_illustration">
       <div class="card-body text-center p-3 w-100 pt-0">
         <div class="docs-info">
           <h6 class="mb-0">El_Hayyu Project</h6>

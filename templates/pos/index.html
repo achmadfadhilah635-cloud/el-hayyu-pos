@@ -6,13 +6,13 @@
 
 <div class="container-fluid py-4">
     <div class="row">
-        
+
         <div class="col-lg-8">
             <div class="card h-100">
                 <div class="card-header pb-0 p-3">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0"><i class="fas fa-shopping-cart text-primary me-2"></i>Kasir / Transaksi</h6>
-                        
+
                         <button class="btn btn-warning btn-sm mb-0" type="button" onclick="toggleKamera()">
                             <i class="fas fa-camera me-1"></i> Scan Kamera
                         </button>
@@ -26,31 +26,39 @@
                     <div class="form-group mb-0">
                         <div class="input-group input-group-lg">
                             <span class="input-group-text"><i class="fas fa-barcode"></i></span>
-                            <input type="text" id="barcode_input" class="form-control" placeholder="Scan Barcode / Ketik Kode..." autofocus>
+                            <input type="text" id="barcode_input" class="form-control"
+                                placeholder="Scan Barcode / Ketik Kode..." autofocus>
                             <button class="btn btn-primary mb-0" type="button" onclick="cariBarang()">
                                 <i class="fas fa-search"></i> Cari
                             </button>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="card-body p-3">
                     <div class="table-responsive">
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama Barang</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Harga</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Qty</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Subtotal</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama
+                                        Barang</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Harga</th>
+                                    <th
+                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Qty</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Subtotal</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody id="tabel_keranjang">
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
-                    
+
                     <div id="empty_cart_msg" class="text-center mt-4">
                         <i class="fas fa-box-open fa-3x text-secondary mb-3"></i>
                         <p class="text-sm text-muted">Keranjang masih kosong.</p>
@@ -66,7 +74,7 @@
                         <i class="ni ni-money-coins me-2"></i> PEMBAYARAN
                     </h6>
                 </div>
-                
+
                 <div class="card-body px-lg-4 py-lg-4">
                     <div class="text-center mb-3">
                         <span class="text-muted text-uppercase text-xs font-weight-bold">Total Tagihan:</span>
@@ -74,26 +82,56 @@
                     </div>
 
                     <hr class="dark horizontal my-3">
-                    
+
                     <form role="form">
-                        <div class="form-group mb-3">
-                            <label class="form-control-label text-xs">Uang Tunai (Bayar)</label>
-                            <div class="input-group input-group-alternative border border-light shadow-sm rounded">
-                                <span class="input-group-text bg-white py-1"><i class="fas fa-wallet text-success text-sm"></i></span>
-                                <input class="form-control ps-2" placeholder="0" type="number" id="input_bayar" style="font-weight: bold; font-size: 1rem;">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="metodeBayar" id="radioTunai"
+                                        value="TUNAI" checked onchange="gantiMetode()">
+                                    <label class="form-check-label font-weight-bold" for="radioTunai">
+                                        <i class="fas fa-money-bill-wave text-success"></i> TUNAI
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="metodeBayar" id="radioQris"
+                                        value="QRIS" onchange="gantiMetode()">
+                                    <label class="form-check-label font-weight-bold" for="radioQris">
+                                        <i class="fas fa-qrcode text-primary"></i> QRIS
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="card border mb-3 shadow-none">
+
+                        <div class="form-group mb-3" id="blok_uang_tunai">
+                            <label class="form-control-label text-xs">Uang Tunai (Bayar)</label>
+                            <div class="input-group input-group-alternative border border-light shadow-sm rounded">
+                                <span class="input-group-text bg-white py-1"><i
+                                        class="fas fa-wallet text-success text-sm"></i></span>
+                                <input class="form-control ps-2" placeholder="0" type="number" id="input_bayar"
+                                    style="font-weight: bold; font-size: 1rem;">
+                            </div>
+                        </div>
+
+                        <div class="card border mb-3 shadow-none" id="blok_kembalian">
                             <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center">
                                 <span class="text-xs font-weight-bold text-muted">Kembalian:</span>
-                                <h5 class="text-success font-weight-bold mb-0" id="label_kembali" style="font-size: 1rem;">Rp 0</h5>
+                                <h5 class="text-success font-weight-bold mb-0" id="label_kembali"
+                                    style="font-size: 1rem;">Rp 0</h5>
                             </div>
                         </div>
 
                         <div class="text-center mt-3">
-                            <button type="button" class="btn bg-gradient-success w-100 mb-0" onclick="selesaikanTransaksi()">
+                            <button type="button" class="btn bg-gradient-success w-100 mb-0" onclick="cekDanBayar()">
                                 <i class="ni ni-check-bold me-1"></i> BAYAR SEKARANG
+                            </button>
+
+                            <!-- TOMBOL CETAK SUSULAN (Hidden by default) -->
+                            <button type="button" id="btnCetakSusulan" class="btn btn-outline-dark w-100 mt-2 mb-0"
+                                style="display: none;" onclick="cetakStrukTerakhir()">
+                                <i class="fas fa-print me-1"></i> Cetak Struk Terakhir
                             </button>
                         </div>
                     </form>
@@ -103,13 +141,102 @@
 
     </div>
 </div>
+
+<!-- MODAL QRIS -->
+<div class="modal fade" id="modalQris" tabindex="-1" role="dialog" aria-labelledby="modalQrisLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalQrisLabel">Scan QRIS</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Silakan scan kode QR di bawah ini:</p>
+                <div id="qris_container" class="border p-2 d-inline-block">
+                    <img id="img_qris" src="" alt="QRIS Code" style="max-width: 100%; max-height: 300px;">
+                </div>
+                <p class="mt-3 text-sm text-muted" id="qris_loading">Memuat QRIS...</p>
+                <h4 class="mt-3 text-primary font-weight-bold" id="label_total_qris">Rp 0</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn bg-gradient-primary" onclick="selesaikanTransaksi('QRIS')">Pembayaran
+                    Selesai</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
 
 {% block extra_js %}
 <script>
     // --- VARIABEL GLOBAL ---
-    let keranjang = []; 
+    let keranjang = [];
     let html5QrcodeScanner = null;
+    let tokoSettings = { qris_url: '' };
+
+    // LOAD SETTING SAAT MEMBUKA HALAMAN
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/api/settings/')
+            .then(res => res.json())
+            .then(data => {
+                tokoSettings = data;
+                if (data.qris_url) {
+                    document.getElementById('img_qris').src = data.qris_url;
+                    document.getElementById('qris_loading').style.display = 'none';
+                } else {
+                    document.getElementById('img_qris').alt = "Belum ada gambar QRIS. Upload di Pengaturan.";
+                    document.getElementById('qris_loading').innerText = "Belum ada gambar QRIS.";
+                }
+            });
+    });
+
+    function gantiMetode() {
+        let metode = document.querySelector('input[name="metodeBayar"]:checked').value;
+        let blokUang = document.getElementById('blok_uang_tunai');
+        let blokKembali = document.getElementById('blok_kembalian');
+        let inputBayar = document.getElementById('input_bayar');
+
+        if (metode === 'QRIS') {
+            blokUang.style.opacity = '0.5';
+            inputBayar.disabled = true;
+            inputBayar.value = "";
+            // blokKembali.style.display = 'none';
+        } else {
+            blokUang.style.opacity = '1';
+            inputBayar.disabled = false;
+            // blokKembali.style.display = 'block';
+        }
+        hitungKembalian(); // Update kembalian display immediately
+    }
+
+    function cekDanBayar() {
+        let metode = document.querySelector('input[name="metodeBayar"]:checked').value;
+
+        if (keranjang.length === 0) {
+            alert("Keranjang kosong!");
+            return;
+        }
+
+        let total = keranjang.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+
+        if (metode === 'QRIS') {
+            // Tampilkan Modal QRIS
+            if (!tokoSettings.qris_url) {
+                alert("Gambar QRIS belum di-upload di menu Pengaturan Toko!");
+                return;
+            }
+            document.getElementById('label_total_qris').innerText = "Rp " + total.toLocaleString('id-ID');
+            let myModal = new bootstrap.Modal(document.getElementById('modalQris'), {});
+            myModal.show();
+        } else {
+            // Bayar Tunai
+            selesaikanTransaksi('TUNAI');
+        }
+    }
 
     // =========================================
     // 1. KAMERA & SCANNER LOGIC
@@ -135,10 +262,39 @@
         html5QrcodeScanner.render(onScanSuccess);
     }
 
+    let lastScannedCode = null;
+    let scanCooldown = false;
+
     function onScanSuccess(decodedText, decodedResult) {
+        if (scanCooldown || decodedText === lastScannedCode) {
+            // Jika masih cooldown atau kode sama persis dgn sebelumnya (dan belum reset), ABAIKAN.
+            return;
+        }
+
         console.log(`Code scanned = ${decodedText}`);
+
+        // KUNCI SEMENTARA BIAR GAK SCAN TERUS
+        lastScannedCode = decodedText;
+        scanCooldown = true;
+
+        // Masukkan ke input
         document.getElementById('barcode_input').value = decodedText;
-        cariBarang(); // Otomatis cari setelah scan
+
+        // Bunyi Beep (Opsional jika browser support)
+        // let audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+        // audio.play().catch(e => {});
+
+        cariBarang(); // Proses cari barang
+
+        // BUKA KUNCI SETELAH 1.5 DETIK
+        setTimeout(() => {
+            scanCooldown = false;
+        }, 1500);
+
+        // RESET lastScannedCode SETELAH 3 DETIK (Biar bisa scan barang yg sama lagi nanti)
+        setTimeout(() => {
+            lastScannedCode = null;
+        }, 3000);
     }
 
     function stopKamera() {
@@ -153,9 +309,9 @@
     // 2. CARI BARANG & KERANJANG
     // =========================================
     const inputBarcode = document.getElementById('barcode_input');
-    
+
     // Event Listener Enter
-    inputBarcode.addEventListener("keypress", function(event) {
+    inputBarcode.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
             cariBarang();
@@ -164,21 +320,21 @@
 
     function cariBarang() {
         let kode = inputBarcode.value;
-        if(!kode) return;
+        if (!kode) return;
 
         // PENTING: Parameter URL harus 'term' sesuai views.py yang kita buat sebelumnya
         fetch(`/api/get_product/?term=${kode}`)
             .then(response => response.json())
             .then(data => {
-                if(data.results.length > 0) {
+                if (data.results.length > 0) {
                     // Ambil hasil pertama
                     tambahKeKeranjang(data.results[0]);
-                    
-                    inputBarcode.value = ""; 
-                    inputBarcode.focus();    
+
+                    inputBarcode.value = "";
+                    inputBarcode.focus();
                 } else {
                     alert("Barang tidak ditemukan!");
-                    inputBarcode.select();   
+                    inputBarcode.select();
                 }
             })
             .catch(error => {
@@ -191,7 +347,7 @@
         // Cek barang di keranjang
         let itemExist = keranjang.find(item => item.id === barang.id);
 
-        if(itemExist) {
+        if (itemExist) {
             itemExist.qty += 1;
         } else {
             keranjang.push({
@@ -212,11 +368,11 @@
 
         tabel.innerHTML = "";
 
-        if(keranjang.length === 0) {
+        if (keranjang.length === 0) {
             emptyMsg.style.display = 'block';
         } else {
             emptyMsg.style.display = 'none';
-            
+
             keranjang.forEach((item, index) => {
                 let subtotal = item.harga * item.qty;
                 totalBelanja += subtotal;
@@ -255,14 +411,14 @@
 
         // Update Total
         document.getElementById('label_total').innerText = "Rp " + totalBelanja.toLocaleString('id-ID');
-        
+
         // Update Kembalian juga saat barang berubah
-        hitungKembalian(); 
+        hitungKembalian();
     }
 
     function ubahQty(index, jumlah) {
         keranjang[index].qty += jumlah;
-        if(keranjang[index].qty <= 0) {
+        if (keranjang[index].qty <= 0) {
             hapusItem(index);
         } else {
             updateTampilan();
@@ -281,23 +437,31 @@
     const inputBayar = document.getElementById('input_bayar');
 
     // Event Listener saat mengetik uang bayar
-    inputBayar.addEventListener('keyup', function() {
+    inputBayar.addEventListener('keyup', function () {
         hitungKembalian();
     });
 
     function hitungKembalian() {
         // Ambil total belanja saat ini
         let total = keranjang.reduce((sum, item) => sum + (item.harga * item.qty), 0);
-        
+
         let bayar = parseInt(inputBayar.value) || 0;
         let kembali = bayar - total;
-        
+
         let labelKembali = document.getElementById('label_kembali');
-        
-        if(kembali >= 0) {
+
+        let metode = document.querySelector('input[name="metodeBayar"]:checked').value;
+        if (metode === 'QRIS') {
+            // Kalau QRIS, selalu pas (kembalian 0)
+            labelKembali.innerText = "Rp 0 (QRIS)";
+            labelKembali.className = "text-secondary font-weight-bold mb-0";
+            return;
+        }
+
+        if (kembali >= 0) {
             // Uang Cukup
             labelKembali.innerText = "Rp " + kembali.toLocaleString('id-ID');
-            labelKembali.className = "text-success font-weight-bold mb-0"; 
+            labelKembali.className = "text-success font-weight-bold mb-0";
         } else {
             // Uang Kurang
             labelKembali.innerText = "Kurang Rp " + Math.abs(kembali).toLocaleString('id-ID');
@@ -305,60 +469,104 @@
         }
     }
 
-    function selesaikanTransaksi() {
-        if(keranjang.length === 0) {
+    let lastTransactionId = null;
+
+    function selesaikanTransaksi(metodeInput) {
+        // TUTUP MODAL JIKA ADA
+        let elModal = document.getElementById('modalQris');
+        let modalInstance = bootstrap.Modal.getInstance(elModal);
+        if (modalInstance) modalInstance.hide();
+
+        if (keranjang.length === 0) {
             alert("Keranjang kosong!");
             return;
         }
 
         let total = keranjang.reduce((sum, item) => sum + (item.harga * item.qty), 0);
-        let uangBayar = parseInt(inputBayar.value) || 0;
-        
-        if(uangBayar < total) {
-            alert("Uang pembayaran kurang!");
-            return;
+
+        let uangBayar = 0;
+        if (metodeInput === 'TUNAI') {
+            uangBayar = parseInt(inputBayar.value) || 0;
+            if (uangBayar < total) {
+                alert("Uang pembayaran kurang!");
+                return;
+            }
+        } else {
+            // QRIS dianggap pas
+            uangBayar = total;
         }
 
         // Siapkan Data
         let dataTransaksi = {
             keranjang: keranjang,
             bayar: uangBayar,
-            total: total
+            total: total,
+            metode_pembayaran: metodeInput // Dikirim ke server
         };
 
         // Kirim ke Server
-        let btn = document.querySelector("button[onclick='selesaikanTransaksi()']");
+        let btn = document.querySelector("button[onclick='cekDanBayar()']");
         let txtAsli = btn.innerHTML;
         btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Memproses...";
         btn.disabled = true;
 
-        fetch('/api/simpan_transaksi/', {  // Pastikan URL API sesuai urls.py
+        fetch('/api/simpan_transaksi/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataTransaksi)
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                alert("✅ Transaksi Berhasil!\nNo Struk: " + data.no_struk);
-                
-                // Reset
-                keranjang = [];
-                updateTampilan();
-                inputBayar.value = "";
-                document.getElementById('label_kembali').innerText = "Rp 0";
-                
-                // Opsional: window.open(`/kasir/cetak/${data.no_struk}`, '_blank');
-            } else {
-                alert("❌ Gagal: " + data.message);
-            }
-        })
-        .catch(error => console.error('Error:', error))
-        .finally(() => {
-            btn.innerHTML = txtAsli;
-            btn.disabled = false;
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Tutup Tab Loading tadi (karena kita ganti strategi ke Manual Button)
+                    // ... (Tidak pakai popup auto lagi)
+
+                    alert("✅ Transaksi Berhasil (" + metodeInput + ")!\nSilakan klik tombol 'Cetak Struk' di bawah.");
+
+                    // Reset
+                    keranjang = [];
+                    updateTampilan();
+                    if (metodeInput === 'TUNAI') inputBayar.value = "";
+                    document.getElementById('label_kembali').innerText = "Rp 0";
+
+                    // TAMPILKAN TOMBOL CETAK SUSULAN
+                    lastTransactionId = data.transaksi_id;
+                    let btnCetak = document.getElementById('btnCetakSusulan');
+                    btnCetak.style.display = 'block';
+                    btnCetak.className = "btn btn-dark w-100 mt-2 mb-0 h4"; // Perbesar tombol
+
+                } else {
+                    alert("❌ Gagal: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Terjadi kesalahan koneksi.");
+            })
+            .finally(() => {
+                btn.innerHTML = txtAsli;
+                btn.disabled = false;
+            });
     }
 
+    function cetakStrukTerakhir() {
+        console.log("Mencoba cetak struk. ID Transaksi:", lastTransactionId);
+
+        if (lastTransactionId) {
+            // METODE POPUP WINDOW (Lebih Stabil daripada Iframe)
+            const url = `/cetak-struk/${lastTransactionId}/`;
+            const win = window.open(url, '_blank', 'width=400,height=600,toolbar=0,menubar=0,location=0');
+
+            if (win) {
+                win.focus();
+            } else {
+                alert("Pop-up diblokir! Izinkan pop-up untuk mencetak struk.");
+            }
+
+        } else {
+            console.error("ID Transaksi kosong/null.");
+            alert("Belum ada transaksi yang berhasil atau ID tidak ditemukan.");
+        }
+    }
 </script>
 {% endblock extra_js %}

@@ -16,6 +16,10 @@ urlpatterns = [
     
     # 4. Detail & Cetak
     path('api/transaksi/<int:id>/', views.get_transaksi_detail_api, name='get_transaksi_detail'),
-    path('kasir/cetak/<int:id>/', views.cetak_struk, name='cetak_struk'),
+    path('cetak-struk/<int:id>/', views.cetak_struk, name='cetak_struk'),
     path('transaksi/', views.transaction_list, name='transaction_list'),
+
+    # 5. PENGATURAN TOKO
+    path('settings/', views.settings_toko, name='settings_toko'),
+    path('api/settings/', views.get_toko_settings_api, name='get_toko_settings_api'),
 ]

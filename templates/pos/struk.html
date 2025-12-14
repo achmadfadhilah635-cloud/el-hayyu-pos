@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,28 +8,55 @@
     <style>
         /* CSS KHUSUS KERTAS THERMAL 58mm */
         body {
-            font-family: 'Courier New', Courier, monospace; /* Font mirip mesin kasir */
+            font-family: 'Courier New', Courier, monospace;
+            /* Font mirip mesin kasir */
             font-size: 12px;
             margin: 0;
             padding: 10px;
-            width: 58mm; /* Lebar kertas standar */
+            width: 58mm;
+            /* Lebar kertas standar */
         }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .bold { font-weight: bold; }
-        .line { border-bottom: 1px dashed #000; margin: 5px 0; }
-        
-        table { width: 100%; }
-        td { vertical-align: top; }
-        
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .line {
+            border-bottom: 1px dashed #000;
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        td {
+            vertical-align: top;
+        }
+
         /* Hilangkan elemen browser saat print */
         @media print {
-            @page { margin: 0; }
-            body { margin: 10px; }
+            @page {
+                margin: 0;
+            }
+
+            body {
+                margin: 10px;
+            }
         }
     </style>
 </head>
-<body onload="window.print()"> <div class="text-center">
+
+<body>
+    <div class="text-center">
         <div class="bold" style="font-size: 14px;">{{ store_name }}</div>
         <div>{{ store_address }}</div>
         <div>Telp: {{ store_phone }}</div>
@@ -80,5 +108,21 @@
     </div>
     <br><br>
 
+    <br><br>
+
+    <script>
+        window.addEventListener("load", function () {
+            // Beri jeda 500ms agar rendering selesai, baru panggil dialog print
+            setTimeout(function () {
+                window.print();
+            }, 500);
+
+            // Tutup window otomatis setelah print (atau cancel)
+            window.onafterprint = function () {
+                window.close();
+            };
+        });
+    </script>
 </body>
+
 </html>

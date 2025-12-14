@@ -1,0 +1,84 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header pb-0 p-3">
+                    <h6 class="mb-0">Pengaturan Informasi Toko & QRIS</h6>
+                </div>
+                <div class="card-body p-3">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Nama Toko (Muncul di Struk)</label>
+                                    <input type="text" name="nama_toko" class="form-control"
+                                        value="{{ toko.nama_toko }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">No. HP / WhatsApp</label>
+                                    <input type="text" name="no_hp" class="form-control" value="{{ toko.no_hp }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Alamat Lengkap</label>
+                            <textarea name="alamat" class="form-control" rows="3">{{ toko.alamat }}</textarea>
+                        </div>
+
+                        <hr class="horizontal dark">
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <label class="form-control-label">Upload Gambar QRIS</label>
+                                <input type="file" name="qris_image" class="form-control" accept="image/*"
+                                    onchange="previewImage(this)">
+                                <small class="text-muted">Format: JPG, PNG. Max 2MB.</small>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <label class="form-control-label d-block">Preview QRIS</label>
+                                <div class="border rounded p-2 d-inline-block bg-white">
+                                    {% if toko.qris_image %}
+                                    <img id="preview" src="{{ toko.qris_image.url }}" alt="QRIS"
+                                        style="max-height: 200px; max-width: 100%;">
+                                    {% else %}
+                                    <img id="preview" src="https://via.placeholder.com/200x200?text=Belum+Ada+QRIS"
+                                        alt="QRIS" style="max-height: 200px; max-width: 100%;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn bg-gradient-primary">Simpan Perubahan</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('preview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+{% endblock content %}

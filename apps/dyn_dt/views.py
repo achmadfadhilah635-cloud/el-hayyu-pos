@@ -138,6 +138,7 @@ def simpan_transaksi_api(request):
             keranjang = data.get('keranjang')
             bayar = int(data.get('bayar', 0))
             total = int(data.get('total', 0))
+            metode = data.get('metode_pembayaran', 'TUNAI') # Ambil metode
             kembali = bayar - total
 
             if not keranjang:
@@ -150,7 +151,8 @@ def simpan_transaksi_api(request):
                     kode_transaksi = no_struk,
                     total_belanja  = total,
                     uang_bayar     = bayar,
-                    kembalian      = kembali
+                    kembalian      = kembali,
+                    metode_pembayaran = metode
                 )
 
                 # B. Detail Barang
@@ -179,7 +181,11 @@ def simpan_transaksi_api(request):
                         subtotal       = int(item['harga']) * qty_beli
                     )
 
-            return JsonResponse({'status': 'success', 'no_struk': no_struk})
+            return JsonResponse({
+                'status': 'success', 
+                'no_struk': no_struk,
+                'transaksi_id': trx_baru.id 
+            })
 
         except Exception as e:
             print(f"❌ Error Transaksi: {e}")
@@ -220,12 +226,15 @@ def cetak_struk(request, id):
         trx = Transaksi.objects.get(id=id)
         details = DetailTransaksi.objects.filter(transaksi=trx)
         
+        # Ambil Pengaturan Toko
+        toko, created = TokoSetting.objects.get_or_create(id=1)
+
         context = {
             'trx': trx,
             'items': details,
-            'store_name': 'EL_HAYYU POS',
-            'store_address': 'Jl. Bisnis No. 1, Internet',
-            'store_phone': '0812-3456-7890'
+            'store_name': toko.nama_toko,
+            'store_address': toko.alamat,
+            'store_phone': toko.no_hp
         }
         return render(request, 'pos/struk.html', context)
     except Transaksi.DoesNotExist:
@@ -247,3 +256,49 @@ def transaction_list(request):
         'transactions': transactions
     }
     return render(request, 'dyn_dt/transaksi_list.html', context)
+
+
+# ==========================================
+# 8. PENGATURAN TOKO (NEW)
+# ==========================================
+from .models import TokoSetting
+
+@login_required(login_url="/accounts/login/")
+def settings_toko(request):
+    # Ambil data pertama atau buat baru jika belum ada
+    toko, created = TokoSetting.objects.get_or_create(id=1)
+
+    if request.method == "POST":
+        toko.nama_toko = request.POST.get('nama_toko', toko.nama_toko)
+        toko.alamat    = request.POST.get('alamat', toko.alamat)
+        toko.no_hp     = request.POST.get('no_hp', toko.no_hp)
+        
+        # Upload Gambar
+        if 'qris_image' in request.FILES:
+            toko.qris_image = request.FILES['qris_image']
+        
+        toko.save()
+        return redirect('settings_toko')
+
+    context = {
+        'segment': 'settings',
+        'page_title': 'Pengaturan Toko',
+        'toko': toko
+    }
+    return render(request, 'pos/settings.html', context)
+
+@login_required(login_url="/accounts/login/")
+def get_toko_settings_api(request):
+    toko, created = TokoSetting.objects.get_or_create(id=1)
+    
+    qris_url = ""
+    if toko.qris_image:
+        qris_url = toko.qris_image.url
+        
+    data = {
+        'nama_toko': toko.nama_toko,
+        'alamat': toko.alamat,
+        'no_hp': toko.no_hp,
+        'qris_url': qris_url
+    }
+    return JsonResponse(data)

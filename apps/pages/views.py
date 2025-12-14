@@ -28,12 +28,38 @@ def index(request):
     # Rumus sisa stok
     sisa_stok_real = stok_awal 
 
+    # --- HITUNG OMSET HARIAN & BULANAN ---
+    now = datetime.now()
+    
+    # Omset Hari Ini
+    omset_hari_ini = Transaksi.objects.filter(
+        tanggal__date=now.date()
+    ).aggregate(Sum('total_belanja'))['total_belanja__sum'] or 0
+
+    # Omset Bulan Ini (Tahun ini)
+    omset_bulan_ini = Transaksi.objects.filter(
+        tanggal__month=now.month,
+        tanggal__year=now.year
+    ).aggregate(Sum('total_belanja'))['total_belanja__sum'] or 0
+
+    # --- GRAFIK PENJUALAN (Jan - Des) ---
+    chart_data = []
+    for m in range(1, 13):
+        total_sebulan = Transaksi.objects.filter(
+            tanggal__year=now.year,
+            tanggal__month=m
+        ).aggregate(Sum('total_belanja'))['total_belanja__sum'] or 0
+        chart_data.append(total_sebulan)
+
     context = {
         'segment': 'index',
         'total_stok': sisa_stok_real, 
         'total_terjual': terjual,      
-        'omset': omset,
+        'omset_total': omset,         # Omset Seumur Hidup
+        'omset_harian': omset_hari_ini,
+        'omset_bulanan': omset_bulan_ini,
         'profit': profit,
+        'chart_data': chart_data,     # Data Grafik
     }
     return render(request, 'pages/dashboard.html', context)
 

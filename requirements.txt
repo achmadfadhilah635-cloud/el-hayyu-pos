@@ -7,3 +7,8 @@ str2bool==1.1
 tzdata==2025.2
 whitenoise==6.11.0
 
+
+django-jazzmin
+django-admin-argon-dashboard
+djangorestframework
+mysqlclient

@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # ==========================================
+# 0. MODEL PENGATURAN TOKO (DINAMIS)
+# ==========================================
+class TokoSetting(models.Model):
+    nama_toko   = models.CharField(max_length=100, default="EL-HAYYU POS")
+    alamat      = models.TextField(default="Jl. Bisnis No. 1, Internet")
+    no_hp       = models.CharField(max_length=20, default="0812-3456-7890")
+    qris_image  = models.ImageField(upload_to='shop/', null=True, blank=True, verbose_name="Foto QRIS")
+    
+    def __str__(self):
+        return self.nama_toko
+
+# ==========================================
 # 1. MODEL UTAMA TOKO (RAK GUDANG KITA)
 # ==========================================
 
@@ -69,6 +81,13 @@ class Transaksi(models.Model):
     total_belanja  = models.IntegerField(default=0)
     uang_bayar     = models.IntegerField(default=0)
     kembalian      = models.IntegerField(default=0)
+    
+    # [BARU] Metode Pembayaran
+    metode_choices = (
+        ('TUNAI', 'Tunai'),
+        ('QRIS', 'QRIS'),
+    )
+    metode_pembayaran = models.CharField(max_length=10, choices=metode_choices, default='TUNAI')
     
     tanggal        = models.DateTimeField(auto_now_add=True)
 
