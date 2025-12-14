@@ -4,6 +4,12 @@
 
 {% block content %}
 
+<div class="d-block d-lg-none mb-3">
+    <a href="javascript:history.back()" class="btn btn-outline-dark btn-sm">
+        <i class="fas fa-arrow-left me-1"></i> Kembali
+    </a>
+</div>
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -13,16 +19,18 @@
                         <div class="col-md-4">
                             <h6>Stok Barang Gudang</h6>
                         </div>
-                        
+
                         <div class="col-md-4 my-2 my-md-0">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                <input type="text" id="searchInput" class="form-control" placeholder="Cari Nama / Kode..." onkeyup="filterTable()">
+                                <input type="text" id="searchInput" class="form-control"
+                                    placeholder="Cari Nama / Kode..." onkeyup="filterTable()">
                             </div>
                         </div>
 
                         <div class="col-md-4 text-end">
-                            <button type="button" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#modal-create">
+                            <button type="button" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal"
+                                data-bs-target="#modal-create">
                                 <i class="fas fa-plus me-2"></i>Tambah Barang
                             </button>
                         </div>
@@ -34,8 +42,11 @@
                         <table class="table align-items-center mb-0" id="tableStok">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kode / ID</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Barang</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kode
+                                        / ID</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Nama Barang</th>
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>
                             </thead>
@@ -54,7 +65,8 @@
                                         <span class="text-xs text-secondary">{{ item.kategori }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <button class="btn btn-link text-secondary mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#detail-{{ item.id }}">
+                                        <button class="btn btn-link text-secondary mb-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#detail-{{ item.id }}">
                                             <i class="fas fa-chevron-down text-primary"></i> Detail
                                         </button>
                                     </td>
@@ -67,22 +79,33 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <ul class="list-group list-group-flush bg-transparent">
-                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
-                                                                <strong class="text-dark">Harga Modal:</strong> Rp {{ item.harga_modal }}
+                                                            <li
+                                                                class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Harga Modal:</strong> Rp {{
+                                                                item.harga_modal }}
                                                             </li>
-                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
-                                                                <strong class="text-dark">Harga Jual:</strong> <span class="text-success fw-bold">Rp {{ item.harga_jual }}</span>
+                                                            <li
+                                                                class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Harga Jual:</strong> <span
+                                                                    class="text-success fw-bold">Rp {{ item.harga_jual
+                                                                    }}</span>
                                                             </li>
-                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
-                                                                <strong class="text-dark">Sisa Stok:</strong> {{ item.stok }} Unit
+                                                            <li
+                                                                class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Sisa Stok:</strong> {{
+                                                                item.stok }} Unit
                                                             </li>
-                                                            <li class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
-                                                                <strong class="text-dark">Terjual:</strong> {{ item.terjual }} Unit
+                                                            <li
+                                                                class="list-group-item bg-transparent border-0 py-1 ps-0 text-sm">
+                                                                <strong class="text-dark">Terjual:</strong> {{
+                                                                item.terjual }} Unit
                                                             </li>
                                                         </ul>
                                                     </div>
                                                     <div class="col-md-6 d-flex align-items-center justify-content-end">
-                                                        <a href="{% url 'product_delete' 'product' item.id %}" class="btn btn-outline-danger btn-sm mb-0" onclick="return confirm('Hapus barang ini?')">
+                                                        <a href="{% url 'product_delete' 'product' item.id %}"
+                                                            class="btn btn-outline-danger btn-sm mb-0"
+                                                            onclick="return confirm('Hapus barang ini?')">
                                                             <i class="fas fa-trash me-1"></i> Hapus
                                                         </a>
                                                     </div>
@@ -110,21 +133,23 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Input Barang Baru</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="stopCamera()">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="stopCamera()">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <div id="reader" style="width: 100%; display:none; margin-bottom: 20px;"></div>
 
                 <form action="{% url 'product_create' 'product' %}" method="POST">
                     {% csrf_token %}
-                    
+
                     <div class="form-group mb-3">
                         <label class="form-control-label">Kode / Barcode</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" name="kode_barang" id="input_barcode" required placeholder="Scan Barcode di sini..." autofocus>
+                            <input class="form-control" type="text" name="kode_barang" id="input_barcode" required
+                                placeholder="Scan Barcode di sini..." autofocus>
                             <button class="btn btn-outline-primary mb-0" type="button" onclick="toggleCamera()">
                                 <i class="fas fa-camera"></i> Scan
                             </button>
@@ -133,7 +158,8 @@
 
                     <div class="form-group mb-3">
                         <label class="form-control-label">Nama Barang</label>
-                        <input class="form-control" type="text" name="nama_barang" required placeholder="Contoh: Indomie Goreng">
+                        <input class="form-control" type="text" name="nama_barang" required
+                            placeholder="Contoh: Indomie Goreng">
                     </div>
 
                     <div class="form-group mb-3">
@@ -178,7 +204,8 @@
                     </div>
 
                     <div class="text-end mt-3">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="stopCamera()">Batal</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            onclick="stopCamera()">Batal</button>
                         <button type="submit" class="btn bg-gradient-primary">Simpan Data</button>
                     </div>
                 </form>
@@ -212,7 +239,7 @@
             }
             if (found) {
                 tr[i].style.display = "";
-                if (trDetail[i]) trDetail[i].style.display = ""; 
+                if (trDetail[i]) trDetail[i].style.display = "";
             } else {
                 tr[i].style.display = "none";
                 if (trDetail[i]) trDetail[i].style.display = "none";
@@ -225,23 +252,23 @@
 
     function toggleCamera() {
         const readerDiv = document.getElementById('reader');
-        
+
         if (readerDiv.style.display === 'none') {
             readerDiv.style.display = 'block';
-            
+
             // Konfigurasi Kamera
-            const config = { 
-                fps: 20, 
+            const config = {
+                fps: 20,
                 qrbox: { width: 250, height: 150 },
                 aspectRatio: 1.0,
                 experimentalFeatures: {
                     useBarCodeDetectorIfSupported: true
                 }
             };
-            
+
             html5QrcodeScanner = new Html5QrcodeScanner("reader", config, false);
             html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-            
+
         } else {
             stopCamera();
         }
@@ -252,15 +279,15 @@
         const inputField = document.getElementById('input_barcode');
         if (inputField) {
             inputField.value = decodedText;
-            
+
             // Efek Visual (Kedip Hijau)
             inputField.style.backgroundColor = "#90EE90";
             setTimeout(() => inputField.style.backgroundColor = "white", 500);
-            
+
             // Pindah fokus ke Nama Barang (biar langsung ngetik nama)
             document.getElementsByName('nama_barang')[0].focus();
         }
-        
+
         // Matikan kamera setelah dapat barcode
         stopCamera();
     }

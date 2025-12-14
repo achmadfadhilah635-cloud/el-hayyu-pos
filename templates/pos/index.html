@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block content %}
+<div class="d-block d-lg-none mb-3">
+    <a href="javascript:history.back()" class="btn btn-outline-dark btn-sm">
+        <i class="fas fa-arrow-left me-1"></i> Kembali
+    </a>
+</div>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <div class="container-fluid py-4">
@@ -285,6 +290,7 @@
         // audio.play().catch(e => {});
 
         cariBarang(); // Proses cari barang
+        stopKamera(); // Tutup kamera setelah dapat 1 barang (Request User)
 
         // BUKA KUNCI SETELAH 1.5 DETIK
         setTimeout(() => {

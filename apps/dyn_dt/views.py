@@ -8,7 +8,7 @@ from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 
 # Import Models
-from .models import Product, Transaksi, DetailTransaksi
+from .models import Product, Transaksi, DetailTransaksi, TokoSetting
 
 # ==========================================
 # 1. HALAMAN DAFTAR PRODUK (GUDANG)
@@ -239,6 +239,8 @@ def cetak_struk(request, id):
         return render(request, 'pos/struk.html', context)
     except Transaksi.DoesNotExist:
         return HttpResponse("Struk tidak ditemukan")
+    except Exception as e:
+        return HttpResponse(f"Terjadi kesalahan: {e}")
     # ... (Pastikan import models sudah ada di paling atas)
 # from .models import Product, Transaksi, DetailTransaksi
 
@@ -261,7 +263,7 @@ def transaction_list(request):
 # ==========================================
 # 8. PENGATURAN TOKO (NEW)
 # ==========================================
-from .models import TokoSetting
+# from .models import TokoSetting # Sudah dipindah ke atas
 
 @login_required(login_url="/accounts/login/")
 def settings_toko(request):

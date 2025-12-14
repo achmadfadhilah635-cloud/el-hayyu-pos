@@ -3,6 +3,12 @@
 
 {% block content %}
 
+<div class="d-block d-lg-none mb-3">
+    <a href="javascript:history.back()" class="btn btn-outline-dark btn-sm">
+        <i class="fas fa-arrow-left me-1"></i> Kembali
+    </a>
+</div>
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -10,15 +16,19 @@
                 <div class="card-header pb-0">
                     <h6>Riwayat Transaksi & Keuangan</h6>
                 </div>
-                
+
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Resi</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tanggal</th>
-                                    <th class="text-secondary opacity-7"></th> </tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.
+                                        Resi</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Tanggal</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {% for trx in transactions %}
@@ -30,14 +40,15 @@
                                             </div>
                                         </div>
                                     </td>
-                                    
+
                                     <td>
                                         <p class="text-sm font-weight-bold mb-0">{{ trx.tanggal|date:"d M Y" }}</p>
                                         <span class="text-xs text-secondary">{{ trx.tanggal|date:"H:i" }} WIB</span>
                                     </td>
 
                                     <td class="align-middle text-center">
-                                        <button class="btn btn-link text-secondary mb-0" type="button" data-bs-toggle="collapse" data-bs-target="#trx-{{ trx.id }}">
+                                        <button class="btn btn-link text-secondary mb-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#trx-{{ trx.id }}">
                                             <i class="fas fa-chevron-down text-dark"></i> Detail
                                         </button>
                                     </td>
@@ -51,29 +62,38 @@
                                                     <div class="col-md-4 mb-3">
                                                         <div class="card border shadow-none">
                                                             <div class="card-body p-3">
-                                                                <h6 class="text-xs text-uppercase text-muted font-weight-bold">Ringkasan</h6>
+                                                                <h6
+                                                                    class="text-xs text-uppercase text-muted font-weight-bold">
+                                                                    Ringkasan</h6>
                                                                 <div class="d-flex justify-content-between">
                                                                     <span class="text-sm">Total Belanja:</span>
-                                                                    <span class="text-sm font-weight-bold text-dark">Rp {{ trx.total_belanja }}</span>
+                                                                    <span class="text-sm font-weight-bold text-dark">Rp
+                                                                        {{ trx.total_belanja }}</span>
                                                                 </div>
                                                                 <div class="d-flex justify-content-between">
                                                                     <span class="text-sm">Uang Bayar:</span>
-                                                                    <span class="text-sm font-weight-bold text-dark">Rp {{ trx.uang_bayar }}</span>
+                                                                    <span class="text-sm font-weight-bold text-dark">Rp
+                                                                        {{ trx.uang_bayar }}</span>
                                                                 </div>
                                                                 <hr class="my-2">
                                                                 <div class="d-flex justify-content-between">
                                                                     <span class="text-sm">Kembalian:</span>
-                                                                    <span class="text-sm font-weight-bold text-success">Rp {{ trx.kembalian }}</span>
+                                                                    <span
+                                                                        class="text-sm font-weight-bold text-success">Rp
+                                                                        {{ trx.kembalian }}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <a href="{% url 'cetak_struk' trx.id %}" target="_blank" class="btn btn-outline-dark btn-sm w-100 mt-2">
+                                                        <a href="{% url 'cetak_struk' trx.id %}" target="_blank"
+                                                            class="btn btn-outline-dark btn-sm w-100 mt-2">
                                                             <i class="fas fa-print me-1"></i> Cetak Struk
                                                         </a>
                                                     </div>
 
                                                     <div class="col-md-8">
-                                                        <h6 class="text-xs text-uppercase text-muted font-weight-bold mb-2">Barang Dibeli:</h6>
+                                                        <h6
+                                                            class="text-xs text-uppercase text-muted font-weight-bold mb-2">
+                                                            Barang Dibeli:</h6>
                                                         <div class="table-responsive border rounded bg-white">
                                                             <table class="table table-sm mb-0">
                                                                 <thead class="thead-light">
@@ -86,9 +106,12 @@
                                                                 <tbody>
                                                                     {% for item in trx.items.all %}
                                                                     <tr>
-                                                                        <td class="text-sm py-2">{{ item.produk.nama_barang }}</td>
-                                                                        <td class="text-sm text-center py-2">{{ item.qty }}</td>
-                                                                        <td class="text-sm text-end py-2">Rp {{ item.subtotal }}</td>
+                                                                        <td class="text-sm py-2">{{
+                                                                            item.produk.nama_barang }}</td>
+                                                                        <td class="text-sm text-center py-2">{{ item.qty
+                                                                            }}</td>
+                                                                        <td class="text-sm text-end py-2">Rp {{
+                                                                            item.subtotal }}</td>
                                                                     </tr>
                                                                     {% endfor %}
                                                                 </tbody>
